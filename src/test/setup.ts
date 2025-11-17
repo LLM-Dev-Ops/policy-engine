@@ -34,16 +34,30 @@ jest.mock('@utils/logger', () => ({
 // Clean up after all tests
 afterAll(async () => {
   // Close database connections
-  const { db } = await import('@db/client');
-  await db.close();
+  try {
+    const { db } = await import('@db/client');
+    if (db && typeof db.close === 'function') {
+      await db.close();
+    }
+  } catch (error) {
+    // Database might not be initialized in all tests
+  }
 
   // Close cache connections
-  const { cacheManager } = await import('@cache/cache-manager');
-  await cacheManager.close();
+  try {
+    const { cacheManager } = await import('@cache/cache-manager');
+    if (cacheManager && typeof cacheManager.close === 'function') {
+      await cacheManager.close();
+    }
+  } catch (error) {
+    // Cache might not be initialized in all tests
+  }
 });
 
 // Helper: Create test policy
 export function createTestPolicy(overrides: any = {}) {
+  const { metadata, rule, status, ...otherOverrides } = overrides;
+
   return {
     metadata: {
       id: 'test-policy-001',
@@ -53,7 +67,7 @@ export function createTestPolicy(overrides: any = {}) {
       namespace: 'test',
       tags: ['test'],
       priority: 50,
-      ...overrides.metadata,
+      ...metadata,
     },
     rules: [
       {
@@ -70,11 +84,11 @@ export function createTestPolicy(overrides: any = {}) {
           decision: 'deny',
           reason: 'Test denial',
         },
-        ...overrides.rule,
+        ...rule,
       },
     ],
-    status: 'active',
-    ...overrides,
+    status: status || 'active',
+    ...otherOverrides,
   };
 }
 

@@ -64,17 +64,19 @@ export class PolicyEngine {
   }
 
   /**
-   * Get all active policies
+   * Get all active policies (sorted by priority, highest first)
    */
   getPolicies(): Policy[] {
-    return Array.from(this.policies.values());
+    return Array.from(this.policies.values()).sort(
+      (a, b) => (b.metadata.priority || 0) - (a.metadata.priority || 0),
+    );
   }
 
   /**
    * Evaluate a request against all policies
    */
   async evaluate(request: PolicyEvaluationRequest): Promise<PolicyEvaluationResponse> {
-    const startTime = Date.now();
+    const startTime = performance.now();
     const { requestId = uuidv4(), context, policies: policyIds, dryRun = false, trace = false } = request;
 
     logger.info({ requestId, dryRun, trace }, 'Starting policy evaluation');
@@ -98,7 +100,7 @@ export class PolicyEngine {
         trace,
       );
 
-      const evaluationTimeMs = Date.now() - startTime;
+      const evaluationTimeMs = performance.now() - startTime;
 
       logger.info(
         {

@@ -1,0 +1,71 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+
+# Tests
+**/*.test.js
+**/*.spec.js
+**/*.test.ts
+**/*.spec.ts
+coverage/
+.nyc_output/
+
+# Configuration
+tsconfig.json
+jest.config.js
+.eslintrc.json
+.prettierrc.json
+.husky/
+
+# Development files
+.env.example
+.env.development
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Documentation (keep README.md and LICENSE)
+docs/
+plans/
+
+# Examples (optional - include if you want examples in the package)
+examples/
+
+# Kubernetes configs
+k8s/
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Misc
+.DS_Store
+*.swp
+*.swo
+*~
+.cache/
+
+# Cargo/Rust (if not needed)
+Cargo.toml
+target/
+
+# Proto files (unless needed by consumers)
+proto/
+
+# Build scripts
+scripts/
+
+# Claude Flow
+.claude-flow/

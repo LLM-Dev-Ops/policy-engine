@@ -75,9 +75,9 @@ describe('CostCalculator', () => {
       it('should calculate Claude 3 Sonnet costs correctly', () => {
         const cost = calculator.calculateCost('anthropic', 'claude-3-sonnet', 2000, 1000);
 
-        expect(cost.promptCost).toBe(0.006); // 2000 * $0.003/1k
-        expect(cost.completionCost).toBe(0.015); // 1000 * $0.015/1k
-        expect(cost.totalCost).toBe(0.021);
+        expect(cost.promptCost).toBeCloseTo(0.006, 6); // 2000 * $0.003/1k
+        expect(cost.completionCost).toBeCloseTo(0.015, 6); // 1000 * $0.015/1k
+        expect(cost.totalCost).toBeCloseTo(0.021, 6);
       });
 
       it('should calculate Claude 3 Haiku costs correctly', () => {
@@ -91,9 +91,9 @@ describe('CostCalculator', () => {
       it('should calculate Claude 2.1 costs correctly', () => {
         const cost = calculator.calculateCost('anthropic', 'claude-2.1', 3000, 1500);
 
-        expect(cost.promptCost).toBe(0.024); // 3000 * $0.008/1k
-        expect(cost.completionCost).toBe(0.036); // 1500 * $0.024/1k
-        expect(cost.totalCost).toBe(0.060);
+        expect(cost.promptCost).toBeCloseTo(0.024, 6); // 3000 * $0.008/1k
+        expect(cost.completionCost).toBeCloseTo(0.036, 6); // 1500 * $0.024/1k
+        expect(cost.totalCost).toBeCloseTo(0.060, 6);
       });
 
       it('should calculate Claude 2 costs correctly', () => {
@@ -107,9 +107,9 @@ describe('CostCalculator', () => {
       it('should calculate Claude Instant costs correctly', () => {
         const cost = calculator.calculateCost('anthropic', 'claude-instant', 5000, 2500);
 
-        expect(cost.promptCost).toBe(0.004); // 5000 * $0.0008/1k
-        expect(cost.completionCost).toBe(0.006); // 2500 * $0.0024/1k
-        expect(cost.totalCost).toBe(0.010);
+        expect(cost.promptCost).toBeCloseTo(0.004, 6); // 5000 * $0.0008/1k
+        expect(cost.completionCost).toBeCloseTo(0.006, 6); // 2500 * $0.0024/1k
+        expect(cost.totalCost).toBeCloseTo(0.010, 6);
       });
     });
 
@@ -171,8 +171,8 @@ describe('CostCalculator', () => {
         const cost1 = calculator.calculateCost('anthropic', 'claude-3-opus-20240229', 1000, 500);
         const cost2 = calculator.calculateCost('anthropic', 'claude-3-sonnet-20240229', 1000, 500);
 
-        expect(cost1.totalCost).toBe(0.0525); // Opus pricing
-        expect(cost2.totalCost).toBe(0.018); // Sonnet pricing
+        expect(cost1.totalCost).toBeCloseTo(0.0525, 6); // Opus pricing: 1k*0.015 + 0.5k*0.075
+        expect(cost2.totalCost).toBeCloseTo(0.0105, 6); // Sonnet pricing: 1k*0.003 + 0.5k*0.015
       });
     });
 
@@ -389,7 +389,7 @@ describe('CostCalculator', () => {
       const expectedMonthlyCost = singleRequestCost * 100 * 30;
 
       expect(monthlyCost).toBe(expectedMonthlyCost);
-      expect(monthlyCost).toBeCloseTo(360, 0); // ~$360/month
+      expect(monthlyCost).toBeCloseTo(180, 0); // ~$180/month (100 req/day * 30 days * $0.06/req)
     });
 
     it('should calculate monthly cost for high-volume usage', () => {

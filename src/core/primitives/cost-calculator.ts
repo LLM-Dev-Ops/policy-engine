@@ -163,11 +163,12 @@ export class CostCalculator {
     }
 
     // Try partial match (e.g., "gpt-4-turbo-preview" matches "gpt-4-turbo")
+    // Sort keys by length descending to match most specific model first
     const providerPricing = this.pricing[providerLower];
     if (providerPricing) {
-      const matchingModel = Object.keys(providerPricing).find((key) =>
-        modelLower.includes(key.toLowerCase()),
-      );
+      const matchingModel = Object.keys(providerPricing)
+        .sort((a, b) => b.length - a.length)
+        .find((key) => modelLower.includes(key.toLowerCase()));
 
       if (matchingModel) {
         return providerPricing[matchingModel];

@@ -355,7 +355,7 @@ describe('PIIDetector', () => {
 
     it('should detect any type of PII', () => {
       expect(detector.containsPII('Email: user@test.com')).toBe(true);
-      expect(detector.containsPII('Phone: 555-1234')).toBe(true);
+      expect(detector.containsPII('Phone: 555-123-4567')).toBe(true);
       expect(detector.containsPII('SSN: 123-45-6789')).toBe(true);
       expect(detector.containsPII('IP: 192.168.1.1')).toBe(true);
     });

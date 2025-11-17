@@ -99,9 +99,10 @@ export class TokenCounter {
     };
 
     // Find matching model (case-insensitive, partial match)
-    const modelKey = Object.keys(modelLimits).find((key) =>
-      model.toLowerCase().includes(key.toLowerCase()),
-    );
+    // Sort keys by length descending to match most specific model first
+    const modelKey = Object.keys(modelLimits)
+      .sort((a, b) => b.length - a.length)
+      .find((key) => model.toLowerCase().includes(key.toLowerCase()));
 
     return modelKey ? modelLimits[modelKey] : 4096; // Default to 4096 if unknown
   }

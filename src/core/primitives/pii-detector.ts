@@ -23,8 +23,8 @@ export type PIIType =
 export class PIIDetector {
   // Regex patterns for PII detection
   private patterns: Record<PIIType, RegExp> = {
-    email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
-    phone: /\b(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g,
+    email: /[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}/gu,
+    phone: /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g,
     ssn: /\b\d{3}-\d{2}-\d{4}\b/g,
     credit_card: /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g,
     ip_address: /\b(?:\d{1,3}\.){3}\d{1,3}\b/g,
