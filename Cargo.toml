@@ -32,17 +32,19 @@ serde_yaml = "0.9"
 thiserror = "1.0"
 anyhow = "1.0"
 
-# Logging and tracing
+# Logging and tracing (LLM Dev Ops Platform Unified Telemetry Stack)
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
-tracing-opentelemetry = "0.22"
-opentelemetry = { version = "0.21", features = ["rt-tokio"] }
-opentelemetry-jaeger = "0.20"
+tracing-opentelemetry = "0.28"
+opentelemetry = { version = "0.27", features = ["trace"] }
+opentelemetry_sdk = { version = "0.27", features = ["rt-tokio"] }
+opentelemetry-otlp = { version = "0.27", features = ["grpc-tonic"] }
+opentelemetry-semantic-conventions = "0.27"
 
-# gRPC
-tonic = { version = "0.11", features = ["tls", "tls-roots"] }
-prost = "0.12"
-prost-types = "0.12"
+# gRPC (upgraded for opentelemetry-otlp 0.27 compatibility)
+tonic = { version = "0.12", features = ["tls", "tls-roots"] }
+prost = "0.13"
+prost-types = "0.13"
 
 # HTTP
 axum = { version = "0.7", features = ["macros"] }
@@ -111,7 +113,7 @@ mockito = "1.2"
 wiremock = "0.6"
 
 [build-dependencies]
-tonic-build = "0.11"
+tonic-build = "0.12"
 
 [features]
 default = ["redis-cache", "postgres-storage"]

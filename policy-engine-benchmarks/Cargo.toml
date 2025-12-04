@@ -35,9 +35,10 @@ anyhow = "1.0"
 # CLI
 clap = { version = "4.4", features = ["derive"] }
 
-# Logging
+# Logging and tracing (aligned with LLM Dev Ops platform telemetry versions)
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+tracing-opentelemetry = "0.28"
 
 # UUID for unique identifiers
 uuid = { version = "1.6", features = ["v4"] }
