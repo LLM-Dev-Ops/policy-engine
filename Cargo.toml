@@ -1,11 +1,57 @@
-[package]
-name = "llm-policy-engine"
-version = "0.1.0"
+[workspace]
+members = [".", "policy-engine-benchmarks"]
+resolver = "2"
+
+[workspace.package]
 edition = "2021"
 authors = ["LLM Policy Engine Team"]
 license = "MIT OR Apache-2.0"
-description = "High-performance policy engine for LLM operations"
 repository = "https://github.com/llm-policy-engine/llm-policy-engine"
+
+[workspace.dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+async-trait = "0.1"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Logging and tracing (LLM Dev Ops Platform Unified Telemetry Stack)
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+tracing-opentelemetry = "0.28"
+opentelemetry = { version = "0.27", features = ["trace"] }
+opentelemetry_sdk = { version = "0.27", features = ["rt-tokio"] }
+opentelemetry-otlp = { version = "0.27", features = ["grpc-tonic"] }
+opentelemetry-semantic-conventions = "0.27"
+
+# Time and date
+chrono = { version = "0.4", features = ["serde"] }
+
+# CLI
+clap = { version = "4.4", features = ["derive", "env"] }
+
+# UUID
+uuid = { version = "1.6", features = ["v4", "serde"] }
+
+# Testing
+criterion = { version = "0.5", features = ["async_tokio"] }
+
+[package]
+name = "llm-policy-engine"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "High-performance policy engine for LLM operations"
 keywords = ["llm", "policy", "security", "governance", "ai"]
 categories = ["authentication", "security", "api-bindings"]
 

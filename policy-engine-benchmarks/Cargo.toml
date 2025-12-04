@@ -1,11 +1,11 @@
 [package]
 name = "policy-engine-benchmarks"
 version = "0.1.0"
-edition = "2021"
-authors = ["LLM Policy Engine Team"]
-license = "MIT OR Apache-2.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
 description = "Canonical benchmark suite for Policy Engine - compatible with the 25 benchmark-target repositories"
-repository = "https://github.com/llm-policy-engine/policy-engine-benchmarks"
 keywords = ["benchmark", "policy-engine", "performance", "llm"]
 
 [lib]
@@ -17,34 +17,25 @@ name = "run_benchmarks"
 path = "src/bin/run_benchmarks.rs"
 
 [dependencies]
-# Serialization
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+# Main policy engine crate (workspace sibling)
+llm-policy-engine = { path = ".." }
 
-# Time handling
-chrono = { version = "0.4", features = ["serde"] }
-
-# Async runtime
-tokio = { version = "1.35", features = ["full", "process"] }
-async-trait = "0.1"
-
-# Error handling
-thiserror = "1.0"
-anyhow = "1.0"
-
-# CLI
-clap = { version = "4.4", features = ["derive"] }
-
-# Logging and tracing (aligned with LLM Dev Ops platform telemetry versions)
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
-tracing-opentelemetry = "0.28"
-
-# UUID for unique identifiers
-uuid = { version = "1.6", features = ["v4"] }
+# Workspace dependencies
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+tokio = { workspace = true, features = ["process"] }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+tracing-opentelemetry = { workspace = true }
+uuid = { workspace = true }
 
 [dev-dependencies]
-criterion = { version = "0.5", features = ["async_tokio"] }
+criterion = { workspace = true }
 tempfile = "3.10"
 
 [profile.release]
