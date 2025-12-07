@@ -51,6 +51,10 @@ export interface IntegrationConfig {
   llmCostOpsUrl?: string;
   llmGovernanceUrl?: string;
   llmEdgeAgentUrl?: string;
+  // Phase 2B: Upstream consumption adapters
+  llmSchemaRegistryUrl?: string;
+  llmConfigManagerUrl?: string;
+  llmObservatoryUrl?: string;
 }
 
 export interface PerformanceConfig {

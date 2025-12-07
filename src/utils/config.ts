@@ -58,6 +58,10 @@ export const config: AppConfig = {
     llmCostOpsUrl: process.env.LLM_COSTOPS_URL,
     llmGovernanceUrl: process.env.LLM_GOVERNANCE_URL,
     llmEdgeAgentUrl: process.env.LLM_EDGE_AGENT_URL,
+    // Phase 2B: Upstream consumption adapters
+    llmSchemaRegistryUrl: process.env.LLM_SCHEMA_REGISTRY_URL,
+    llmConfigManagerUrl: process.env.LLM_CONFIG_MANAGER_URL,
+    llmObservatoryUrl: process.env.LLM_OBSERVATORY_URL,
   },
 
   performance: {
