@@ -1,0 +1,42 @@
+# Cloud Build ignore file
+# This overrides .gitignore for cloud builds
+
+# Include package-lock.json (needed for npm ci)
+!package-lock.json
+
+# Ignore development files
+.git
+.github
+.vscode
+.idea
+*.md
+!README.md
+docs/
+examples/
+plans/
+
+# Ignore test files
+**/*.test.ts
+**/*.spec.ts
+src/test/
+coverage/
+.nyc_output/
+
+# Ignore local environment files
+.env
+.env.*
+!.env.example
+
+# Ignore build artifacts
+dist/
+*.log
+
+# Ignore Rust artifacts (if any)
+target/
+Cargo.lock
+
+# Ignore K8s configs (not needed for container build)
+k8s/
+
+# Ignore node_modules (will be installed fresh)
+node_modules/

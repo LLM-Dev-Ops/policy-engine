@@ -1,24 +1,79 @@
 /**
- * Policy Routes
- * REST API endpoints for policy management
+ * Hardened Policy Routes
+ *
+ * Enterprise-grade REST API endpoints with:
+ * - Agentics-only identity verification
+ * - Append-only audit trail
+ * - Policy versioning with governance
+ * - Fail-closed validation
+ * - Executive synthesis
+ * - Enterprise metrics
  */
-import { Router, Request, Response } from 'express';
-import { PolicyRepository } from '@db/models/policy-repository';
+import { Router, Response, Request, NextFunction } from 'express';
 import { YAMLParser } from '@core/parser/yaml-parser';
 import { JSONParser } from '@core/parser/json-parser';
 import { SchemaValidator } from '@core/validator/schema-validator';
 import { cacheManager } from '@cache/cache-manager';
-import { authenticate, requirePermission, AuthRequest } from '../middleware/auth';
 import { asyncHandler } from '../middleware/error-handler';
-import { writeRateLimiter, readOnlyRateLimiter } from '../middleware/rate-limit';
 import logger from '@utils/logger';
 import { Policy, PolicyStatus } from '../../types/policy';
+import { PolicyValidationError, PolicyNotFoundError } from '@utils/errors';
+import crypto from 'crypto';
+
+// Security modules
+import {
+  requireAgenticsIdentity,
+  requireReadScope,
+  requireWriteScope,
+  AuthenticatedRequest,
+  getActorIdentity,
+} from '../../security/agentics-identity';
+import {
+  versionedPolicyRepository,
+  VersionedPolicy,
+} from '../../security/versioned-policy-repository';
+import {
+  validatePolicyGovernance,
+  detectPolicyType,
+  isProductionPolicy,
+} from '../../security/policy-governance';
+import { auditTrail } from '../../security/audit-trail';
+import {
+  recordMutation,
+  recordValidationFailure,
+  recordGovernanceViolation,
+} from '../../security/metrics';
+import {
+  readRateLimiter,
+  mutationRateLimiter,
+  strictRateLimiter,
+} from '../../security/rate-limiter';
+
+// Synthesis
+import {
+  buildPolicyCreateSynthesis,
+  buildPolicyEditSynthesis,
+  buildPolicyToggleSynthesis,
+} from '../../synthesis/builder';
+import { ExecutiveSummary } from '../../synthesis/types';
 
 const router = Router();
-const policyRepository = new PolicyRepository();
 const yamlParser = new YAMLParser();
 const jsonParser = new JSONParser();
 const validator = new SchemaValidator();
+
+/**
+ * Add correlation ID to all requests
+ */
+function addCorrelationId(req: Request, _res: Response, next: NextFunction): void {
+  const authReq = req as AuthenticatedRequest;
+  if (!authReq.correlationId) {
+    authReq.correlationId = req.get('x-correlation-id') || crypto.randomUUID();
+  }
+  next();
+}
+
+router.use(addCorrelationId);
 
 /**
  * GET /api/policies
@@ -26,18 +81,19 @@ const validator = new SchemaValidator();
  */
 router.get(
   '/',
-  authenticate,
-  requirePermission('policy:read'),
-  readOnlyRateLimiter,
+  requireAgenticsIdentity,
+  requireReadScope,
+  readRateLimiter,
   asyncHandler(async (req: Request, res: Response) => {
-    const { namespace, status, limit = '100', offset = '0' } = req.query;
+    const authReq = req as AuthenticatedRequest;
+    const { namespace, status, version, limit = '100', offset = '0' } = req.query;
 
-    let policies: Policy[];
+    let policies: VersionedPolicy[];
 
     if (namespace) {
-      policies = await policyRepository.findByNamespace(namespace as string);
+      policies = await versionedPolicyRepository.findByNamespace(namespace as string);
     } else {
-      policies = await policyRepository.findActive();
+      policies = await versionedPolicyRepository.findActive();
     }
 
     if (status) {
@@ -48,227 +104,703 @@ router.get(
     const offsetNum = parseInt(offset as string, 10);
     const paginatedPolicies = policies.slice(offsetNum, offsetNum + limitNum);
 
-    logger.info(
-      { count: paginatedPolicies.length, total: policies.length },
-      'Policies listed',
-    );
+    logger.info({
+      correlationId: authReq.correlationId,
+      count: paginatedPolicies.length,
+      total: policies.length,
+      actor: getActorIdentity(authReq.identity),
+      namespace,
+      version,
+    }, 'Policies listed');
 
     res.json({
       policies: paginatedPolicies,
       total: policies.length,
       limit: limitNum,
       offset: offsetNum,
+      correlationId: authReq.correlationId,
     });
   }),
 );
 
 /**
  * GET /api/policies/:id
- * Get policy by ID
+ * Get policy by ID (optionally by version)
  */
 router.get(
   '/:id',
-  authenticate,
-  requirePermission('policy:read'),
-  readOnlyRateLimiter,
+  requireAgenticsIdentity,
+  requireReadScope,
+  readRateLimiter,
   asyncHandler(async (req: Request, res: Response) => {
+    const authReq = req as AuthenticatedRequest;
     const { id } = req.params;
+    const { version } = req.query;
 
-    const cacheKey = `policy:${id}`;
-    const cached = await cacheManager.get<Policy>(cacheKey);
+    const versionNum = version ? parseInt(version as string, 10) : undefined;
+    const cacheKey = version ? `policy:${id}:v${version}` : `policy:${id}`;
 
+    const cached = await cacheManager.get<VersionedPolicy>(cacheKey);
     if (cached) {
-      logger.debug({ policyId: id }, 'Policy retrieved from cache');
-      res.json({ policy: cached, cached: true });
+      logger.debug({
+        correlationId: authReq.correlationId,
+        policyId: id,
+        version: versionNum,
+      }, 'Policy retrieved from cache');
+
+      res.json({
+        policy: cached,
+        cached: true,
+        correlationId: authReq.correlationId,
+      });
       return;
     }
 
-    const policy = await policyRepository.findById(id);
+    const policy = await versionedPolicyRepository.findById(id, {
+      version: versionNum,
+      latest: !versionNum,
+    });
 
     if (!policy) {
       res.status(404).json({
         error: 'POLICY_NOT_FOUND',
         message: `Policy not found: ${id}`,
+        correlationId: authReq.correlationId,
       });
       return;
     }
 
     await cacheManager.set(cacheKey, policy);
 
-    logger.info({ policyId: id }, 'Policy retrieved');
-    res.json({ policy, cached: false });
+    logger.info({
+      correlationId: authReq.correlationId,
+      policyId: id,
+      version: policy.internalVersion,
+      actor: getActorIdentity(authReq.identity),
+    }, 'Policy retrieved');
+
+    res.json({
+      policy,
+      cached: false,
+      correlationId: authReq.correlationId,
+    });
+  }),
+);
+
+/**
+ * GET /api/policies/:id/versions
+ * Get version history for a policy
+ */
+router.get(
+  '/:id/versions',
+  requireAgenticsIdentity,
+  requireReadScope,
+  readRateLimiter,
+  asyncHandler(async (req: Request, res: Response) => {
+    const authReq = req as AuthenticatedRequest;
+    const { id } = req.params;
+
+    const versions = await versionedPolicyRepository.getVersionHistory(id);
+
+    logger.info({
+      correlationId: authReq.correlationId,
+      policyId: id,
+      versionCount: versions.length,
+      actor: getActorIdentity(authReq.identity),
+    }, 'Policy versions retrieved');
+
+    res.json({
+      policyId: id,
+      versions,
+      total: versions.length,
+      correlationId: authReq.correlationId,
+    });
+  }),
+);
+
+/**
+ * GET /api/policies/:id/audit
+ * Get audit trail for a policy
+ */
+router.get(
+  '/:id/audit',
+  requireAgenticsIdentity,
+  requireReadScope,
+  readRateLimiter,
+  asyncHandler(async (req: Request, res: Response) => {
+    const authReq = req as AuthenticatedRequest;
+    const { id } = req.params;
+    const { limit = '100' } = req.query;
+
+    const entries = await auditTrail.getByPolicyId(id, parseInt(limit as string, 10));
+
+    logger.info({
+      correlationId: authReq.correlationId,
+      policyId: id,
+      entryCount: entries.length,
+      actor: getActorIdentity(authReq.identity),
+    }, 'Policy audit trail retrieved');
+
+    res.json({
+      policyId: id,
+      auditEntries: entries,
+      total: entries.length,
+      correlationId: authReq.correlationId,
+    });
   }),
 );
 
 /**
  * POST /api/policies
- * Create new policy
+ * Create new policy with governance validation
  */
 router.post(
   '/',
-  authenticate,
-  requirePermission('policy:write'),
-  writeRateLimiter,
-  asyncHandler(async (req: AuthRequest, res: Response) => {
+  requireAgenticsIdentity,
+  requireWriteScope,
+  mutationRateLimiter,
+  asyncHandler(async (req: Request, res: Response) => {
+    const authReq = req as AuthenticatedRequest;
     const { policy: policyData, format = 'json' } = req.body;
 
     let policy: Policy;
+    let validationErrors: string[] = [];
 
-    if (format === 'yaml') {
-      policy = yamlParser.parse(policyData);
-    } else {
-      policy = typeof policyData === 'string' ? jsonParser.parse(policyData) : policyData;
-    }
+    try {
+      if (format === 'yaml') {
+        policy = yamlParser.parse(policyData);
+      } else {
+        policy = typeof policyData === 'string' ? jsonParser.parse(policyData) : policyData;
+      }
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Parse error';
+      validationErrors.push(`Parse error: ${errorMsg}`);
 
-    const validation = validator.validate(policy);
-    if (!validation.valid) {
+      recordValidationFailure('parse_error', 'critical', 'unknown');
+
       res.status(400).json({
-        error: 'POLICY_VALIDATION_ERROR',
-        message: 'Policy validation failed',
-        errors: validation.errors,
+        error: 'POLICY_PARSE_ERROR',
+        message: 'Failed to parse policy',
+        errors: validationErrors,
+        correlationId: authReq.correlationId,
       });
       return;
     }
 
-    const created = await policyRepository.create(policy, req.user?.id);
+    // Schema validation
+    const schemaValidation = validator.validate(policy);
+    if (!schemaValidation.valid) {
+      validationErrors = schemaValidation.errors.map((e: unknown) =>
+        typeof e === 'string' ? e : (e as { message?: string })?.message || String(e)
+      );
 
-    await cacheManager.set(`policy:${created.metadata.id}`, created);
+      for (const _error of validationErrors) {
+        recordValidationFailure('schema_error', 'high', policy.metadata.namespace);
+      }
 
-    logger.info({ policyId: created.metadata.id, userId: req.user?.id }, 'Policy created');
+      // Build synthesis for failed validation
+      const synthesis = buildPolicyCreateSynthesis(policy, validationErrors, false);
 
-    res.status(201).json({ policy: created });
+      res.status(400).json({
+        error: 'POLICY_VALIDATION_ERROR',
+        message: 'Policy validation failed',
+        errors: validationErrors,
+        synthesis,
+        correlationId: authReq.correlationId,
+      });
+      return;
+    }
+
+    // Governance validation (fail-closed)
+    const governance = validatePolicyGovernance(policy, {
+      isEnabling: policy.status === PolicyStatus.ACTIVE,
+    });
+
+    if (!governance.valid) {
+      for (const violation of governance.violations) {
+        recordGovernanceViolation(violation.type, detectPolicyType(policy));
+      }
+
+      const synthesis = buildPolicyCreateSynthesis(
+        policy,
+        governance.violations.map(v => v.message),
+        false,
+      );
+
+      // Fail-closed: reject on governance violations
+      res.status(422).json({
+        error: 'GOVERNANCE_VIOLATION',
+        message: 'Policy creation blocked by governance rules',
+        violations: governance.violations,
+        riskLevel: governance.riskLevel,
+        requiresApproval: governance.requiresApproval,
+        synthesis,
+        correlationId: authReq.correlationId,
+      });
+      return;
+    }
+
+    try {
+      // Identity is guaranteed by requireAgenticsIdentity middleware
+      const identity = authReq.identity!;
+
+      const created = await versionedPolicyRepository.create(
+        policy,
+        identity,
+        authReq.correlationId!,
+      );
+
+      await cacheManager.set(`policy:${created.metadata.id}`, created);
+
+      recordMutation('create', policy.metadata.namespace, identity.type);
+
+      // Build success synthesis
+      const synthesis: ExecutiveSummary = buildPolicyCreateSynthesis(policy, [], true);
+
+      logger.info({
+        correlationId: authReq.correlationId,
+        policyId: created.metadata.id,
+        version: created.internalVersion,
+        actor: getActorIdentity(identity),
+        policyType: detectPolicyType(policy),
+        isProduction: isProductionPolicy(policy),
+        synthesis: {
+          risk_level: synthesis.risk_level,
+          recommendation: synthesis.recommendation,
+        },
+      }, 'Policy created');
+
+      res.status(201).json({
+        policy: created,
+        synthesis,
+        correlationId: authReq.correlationId,
+      });
+    } catch (error) {
+      if (error instanceof PolicyValidationError) {
+        const synthesis = buildPolicyCreateSynthesis(
+          policy,
+          [error.message],
+          false,
+        );
+
+        res.status(422).json({
+          error: 'POLICY_CREATION_FAILED',
+          message: error.message,
+          details: error.details,
+          synthesis,
+          correlationId: authReq.correlationId,
+        });
+        return;
+      }
+      throw error;
+    }
   }),
 );
 
 /**
  * PUT /api/policies/:id
- * Update policy
+ * Update policy with version increment and governance
  */
 router.put(
   '/:id',
-  authenticate,
-  requirePermission('policy:write'),
-  writeRateLimiter,
-  asyncHandler(async (req: AuthRequest, res: Response) => {
+  requireAgenticsIdentity,
+  requireWriteScope,
+  mutationRateLimiter,
+  asyncHandler(async (req: Request, res: Response) => {
+    const authReq = req as AuthenticatedRequest;
     const { id } = req.params;
-    const { policy: policyData, format = 'json' } = req.body;
+    const { policy: policyData, format = 'json', hasApproval } = req.body;
 
     let updates: Partial<Policy>;
+    let validationErrors: string[] = [];
 
-    if (format === 'yaml') {
-      updates = yamlParser.parse(policyData);
-    } else {
-      updates = typeof policyData === 'string' ? jsonParser.parse(policyData) : policyData;
+    try {
+      if (format === 'yaml') {
+        updates = yamlParser.parse(policyData);
+      } else {
+        updates = typeof policyData === 'string' ? jsonParser.parse(policyData) : policyData;
+      }
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Parse error';
+
+      res.status(400).json({
+        error: 'POLICY_PARSE_ERROR',
+        message: `Failed to parse policy: ${errorMsg}`,
+        correlationId: authReq.correlationId,
+      });
+      return;
     }
 
-    if (updates.metadata || updates.rules) {
-      const fullPolicy = {
-        metadata: updates.metadata || { id, name: '', version: '', namespace: '' },
-        rules: updates.rules || [],
-        status: updates.status || PolicyStatus.DRAFT,
-      };
+    // Get existing policy for validation
+    const existing = await versionedPolicyRepository.findById(id);
+    if (!existing) {
+      res.status(404).json({
+        error: 'POLICY_NOT_FOUND',
+        message: `Policy not found: ${id}`,
+        correlationId: authReq.correlationId,
+      });
+      return;
+    }
 
-      const validation = validator.validate(fullPolicy);
-      if (!validation.valid) {
-        res.status(400).json({
-          error: 'POLICY_VALIDATION_ERROR',
-          message: 'Policy validation failed',
-          errors: validation.errors,
+    // Merge for validation
+    const mergedPolicy: Policy = {
+      metadata: { ...existing.metadata, ...updates.metadata },
+      rules: updates.rules || existing.rules,
+      status: updates.status || existing.status,
+    };
+
+    // Schema validation
+    const schemaValidation = validator.validate(mergedPolicy);
+    if (!schemaValidation.valid) {
+      validationErrors = schemaValidation.errors.map((e: unknown) =>
+        typeof e === 'string' ? e : (e as { message?: string })?.message || String(e)
+      );
+
+      const synthesis = buildPolicyEditSynthesis(mergedPolicy, validationErrors, false);
+
+      res.status(400).json({
+        error: 'POLICY_VALIDATION_ERROR',
+        message: 'Policy validation failed',
+        errors: validationErrors,
+        synthesis,
+        correlationId: authReq.correlationId,
+      });
+      return;
+    }
+
+    try {
+      // Identity is guaranteed by requireAgenticsIdentity middleware
+      const identity = authReq.identity!;
+
+      const updated = await versionedPolicyRepository.update(
+        id,
+        updates,
+        identity,
+        authReq.correlationId!,
+        { hasApproval },
+      );
+
+      await cacheManager.delete(`policy:${id}`);
+
+      recordMutation('update', mergedPolicy.metadata.namespace, identity.type);
+
+      const synthesis = buildPolicyEditSynthesis(mergedPolicy, [], true);
+
+      logger.info({
+        correlationId: authReq.correlationId,
+        policyId: id,
+        previousVersion: existing.internalVersion,
+        newVersion: updated.internalVersion,
+        actor: getActorIdentity(identity),
+        synthesis: {
+          risk_level: synthesis.risk_level,
+          recommendation: synthesis.recommendation,
+        },
+      }, 'Policy updated');
+
+      res.json({
+        policy: updated,
+        previousVersion: existing.internalVersion,
+        synthesis,
+        correlationId: authReq.correlationId,
+      });
+    } catch (error) {
+      if (error instanceof PolicyValidationError) {
+        const synthesis = buildPolicyEditSynthesis(
+          mergedPolicy,
+          [error.message],
+          false,
+        );
+
+        res.status(422).json({
+          error: 'POLICY_UPDATE_FAILED',
+          message: error.message,
+          details: error.details,
+          synthesis,
+          correlationId: authReq.correlationId,
         });
         return;
       }
+      throw error;
     }
-
-    const updated = await policyRepository.update(id, updates);
-
-    await cacheManager.delete(`policy:${id}`);
-
-    logger.info({ policyId: id, userId: req.user?.id }, 'Policy updated');
-
-    res.json({ policy: updated });
   }),
 );
 
 /**
  * PATCH /api/policies/:id/status
- * Update policy status
+ * Toggle policy status with governance checks
  */
 router.patch(
   '/:id/status',
-  authenticate,
-  requirePermission('policy:write'),
-  writeRateLimiter,
-  asyncHandler(async (req: AuthRequest, res: Response) => {
+  requireAgenticsIdentity,
+  requireWriteScope,
+  strictRateLimiter, // Stricter rate limit for status changes
+  asyncHandler(async (req: Request, res: Response) => {
+    const authReq = req as AuthenticatedRequest;
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, hasApproval, approvalReason } = req.body;
 
     if (!Object.values(PolicyStatus).includes(status)) {
       res.status(400).json({
         error: 'INVALID_STATUS',
         message: `Invalid status: ${status}`,
         validStatuses: Object.values(PolicyStatus),
+        correlationId: authReq.correlationId,
       });
       return;
     }
 
-    const updated = await policyRepository.update(id, { status });
+    const existing = await versionedPolicyRepository.findById(id);
+    if (!existing) {
+      res.status(404).json({
+        error: 'POLICY_NOT_FOUND',
+        message: `Policy not found: ${id}`,
+        correlationId: authReq.correlationId,
+      });
+      return;
+    }
 
-    await cacheManager.delete(`policy:${id}`);
+    const previousStatus = existing.status;
 
-    logger.info({ policyId: id, status, userId: req.user?.id }, 'Policy status updated');
+    try {
+      // Identity is guaranteed by requireAgenticsIdentity middleware
+      const identity = authReq.identity!;
 
-    res.json({ policy: updated });
+      const updated = await versionedPolicyRepository.toggleStatus(
+        id,
+        status,
+        identity,
+        authReq.correlationId!,
+        { hasApproval, approvalReason },
+      );
+
+      await cacheManager.delete(`policy:${id}`);
+
+      recordMutation('toggle_status', existing.metadata.namespace, identity.type);
+
+      const synthesis = buildPolicyToggleSynthesis(updated, previousStatus, status);
+
+      logger.info({
+        correlationId: authReq.correlationId,
+        policyId: id,
+        previousStatus,
+        newStatus: status,
+        version: updated.internalVersion,
+        actor: getActorIdentity(identity),
+        policyType: detectPolicyType(updated),
+        synthesis: {
+          risk_level: synthesis.risk_level,
+          recommendation: synthesis.recommendation,
+        },
+      }, 'Policy status changed');
+
+      res.json({
+        policy: updated,
+        previousStatus,
+        synthesis,
+        correlationId: authReq.correlationId,
+      });
+    } catch (error) {
+      if (error instanceof PolicyValidationError) {
+        res.status(422).json({
+          error: 'STATUS_CHANGE_BLOCKED',
+          message: error.message,
+          details: error.details,
+          correlationId: authReq.correlationId,
+        });
+        return;
+      }
+      throw error;
+    }
   }),
 );
 
 /**
  * DELETE /api/policies/:id
- * Delete policy
+ * Delete policy (soft delete with audit)
  */
 router.delete(
   '/:id',
-  authenticate,
-  requirePermission('policy:delete'),
-  writeRateLimiter,
-  asyncHandler(async (req: AuthRequest, res: Response) => {
+  requireAgenticsIdentity,
+  requireWriteScope,
+  strictRateLimiter, // Stricter rate limit for deletes
+  asyncHandler(async (req: Request, res: Response) => {
+    const authReq = req as AuthenticatedRequest;
     const { id } = req.params;
 
-    await policyRepository.delete(id);
+    const existing = await versionedPolicyRepository.findById(id);
+    if (!existing) {
+      res.status(404).json({
+        error: 'POLICY_NOT_FOUND',
+        message: `Policy not found: ${id}`,
+        correlationId: authReq.correlationId,
+      });
+      return;
+    }
 
-    await cacheManager.delete(`policy:${id}`);
+    // Check if policy is active in production
+    if (existing.status === PolicyStatus.ACTIVE && isProductionPolicy(existing)) {
+      res.status(422).json({
+        error: 'CANNOT_DELETE_ACTIVE_PRODUCTION_POLICY',
+        message: 'Cannot delete an active policy in production. Disable it first.',
+        policyId: id,
+        status: existing.status,
+        correlationId: authReq.correlationId,
+      });
+      return;
+    }
 
-    logger.info({ policyId: id, userId: req.user?.id }, 'Policy deleted');
+    try {
+      // Identity is guaranteed by requireAgenticsIdentity middleware
+      const identity = authReq.identity!;
 
-    res.status(204).send();
+      await versionedPolicyRepository.delete(id, identity, authReq.correlationId!);
+
+      await cacheManager.delete(`policy:${id}`);
+
+      recordMutation('delete', existing.metadata.namespace, identity.type);
+
+      logger.info({
+        correlationId: authReq.correlationId,
+        policyId: id,
+        version: existing.internalVersion,
+        actor: getActorIdentity(identity),
+      }, 'Policy deleted');
+
+      res.status(204).send();
+    } catch (error) {
+      if (error instanceof PolicyNotFoundError) {
+        res.status(404).json({
+          error: 'POLICY_NOT_FOUND',
+          message: error.message,
+          correlationId: authReq.correlationId,
+        });
+        return;
+      }
+      throw error;
+    }
   }),
 );
 
 /**
  * POST /api/policies/validate
- * Validate policy without creating
+ * Validate policy without creating (with full governance check)
  */
 router.post(
   '/validate',
-  authenticate,
-  requirePermission('policy:read'),
-  readOnlyRateLimiter,
+  requireAgenticsIdentity,
+  requireReadScope,
+  readRateLimiter,
   asyncHandler(async (req: Request, res: Response) => {
-    const { policy: policyData, format = 'json' } = req.body;
+    const authReq = req as AuthenticatedRequest;
+    const { policy: policyData, format = 'json', checkGovernance = true } = req.body;
 
     let policy: Policy;
 
-    if (format === 'yaml') {
-      policy = yamlParser.parse(policyData);
-    } else {
-      policy = typeof policyData === 'string' ? jsonParser.parse(policyData) : policyData;
+    try {
+      if (format === 'yaml') {
+        policy = yamlParser.parse(policyData);
+      } else {
+        policy = typeof policyData === 'string' ? jsonParser.parse(policyData) : policyData;
+      }
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Parse error';
+
+      res.status(400).json({
+        error: 'POLICY_PARSE_ERROR',
+        message: `Failed to parse policy: ${errorMsg}`,
+        correlationId: authReq.correlationId,
+      });
+      return;
     }
 
-    const validation = validator.validate(policy);
+    const schemaValidation = validator.validate(policy);
+    const validationErrors = schemaValidation.errors.map((e: unknown) =>
+      typeof e === 'string' ? e : (e as { message?: string })?.message || String(e)
+    );
+
+    let governance = null;
+    if (checkGovernance) {
+      governance = validatePolicyGovernance(policy, {
+        isEnabling: policy.status === PolicyStatus.ACTIVE,
+      });
+    }
+
+    const synthesis = buildPolicyCreateSynthesis(
+      policy,
+      [...validationErrors, ...(governance?.violations.map(v => v.message) || [])],
+      schemaValidation.valid && (governance?.valid ?? true),
+    );
+
+    logger.info({
+      correlationId: authReq.correlationId,
+      valid: schemaValidation.valid && (governance?.valid ?? true),
+      schemaValid: schemaValidation.valid,
+      governanceValid: governance?.valid,
+      policyType: detectPolicyType(policy),
+      actor: getActorIdentity(authReq.identity),
+    }, 'Policy validated');
 
     res.json({
-      valid: validation.valid,
-      errors: validation.errors,
-      policy: validation.valid ? policy : undefined,
+      valid: schemaValidation.valid && (governance?.valid ?? true),
+      schema: {
+        valid: schemaValidation.valid,
+        errors: validationErrors,
+      },
+      governance: governance ? {
+        valid: governance.valid,
+        violations: governance.violations,
+        riskLevel: governance.riskLevel,
+        requiresApproval: governance.requiresApproval,
+        approvalReason: governance.approvalReason,
+      } : null,
+      policyType: detectPolicyType(policy),
+      isProduction: isProductionPolicy(policy),
+      synthesis,
+      correlationId: authReq.correlationId,
+    });
+  }),
+);
+
+/**
+ * GET /api/policies/:id/governance
+ * Get governance analysis for a policy
+ */
+router.get(
+  '/:id/governance',
+  requireAgenticsIdentity,
+  requireReadScope,
+  readRateLimiter,
+  asyncHandler(async (req: Request, res: Response) => {
+    const authReq = req as AuthenticatedRequest;
+    const { id } = req.params;
+
+    const policy = await versionedPolicyRepository.findById(id);
+    if (!policy) {
+      res.status(404).json({
+        error: 'POLICY_NOT_FOUND',
+        message: `Policy not found: ${id}`,
+        correlationId: authReq.correlationId,
+      });
+      return;
+    }
+
+    const governance = validatePolicyGovernance(policy, {
+      isEnabling: false, // Just analyzing, not enabling
+    });
+
+    res.json({
+      policyId: id,
+      policyType: detectPolicyType(policy),
+      isProduction: isProductionPolicy(policy),
+      governance: {
+        valid: governance.valid,
+        violations: governance.violations,
+        riskLevel: governance.riskLevel,
+        requiresApproval: governance.requiresApproval,
+        approvalReason: governance.approvalReason,
+      },
+      correlationId: authReq.correlationId,
     });
   }),
 );
