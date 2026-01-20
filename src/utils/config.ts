@@ -62,7 +62,11 @@ export const config: AppConfig = {
     llmSchemaRegistryUrl: process.env.LLM_SCHEMA_REGISTRY_URL,
     llmConfigManagerUrl: process.env.LLM_CONFIG_MANAGER_URL,
     llmObservatoryUrl: process.env.LLM_OBSERVATORY_URL,
+    // RuVector Service for DecisionEvent persistence
+    ruvectorServiceUrl: process.env.RUVECTOR_SERVICE_URL,
   },
+
+  environment: process.env.ENVIRONMENT || process.env.NODE_ENV || 'development',
 
   performance: {
     maxPolicySizeMB: parseInt(process.env.MAX_POLICY_SIZE_MB || '10', 10),

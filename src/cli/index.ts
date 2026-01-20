@@ -28,6 +28,21 @@ import {
   validatePolicy as validatePolicyCmd,
 } from '../commands/policy';
 import {
+  agentEvaluate,
+  agentResolve,
+  agentRoute,
+  agentInfo,
+  agentRegister,
+} from '../commands/agent';
+import {
+  approvalEvaluate,
+  approvalRoute,
+  approvalResolve,
+  approvalStatus,
+  approvalInfo,
+  approvalRegister,
+} from '../commands/approval-routing';
+import {
   ExecutiveSummary,
   DecisionPacket,
   PolicyDryRunResult,
@@ -642,6 +657,197 @@ dbCommand
       await db.close();
       process.exit(1);
     }
+  });
+
+// Agent commands - Policy Enforcement Agent
+const agentCommand = program.command('agent').description('Policy Enforcement Agent commands');
+
+agentCommand
+  .command('evaluate')
+  .description('Evaluate a request against policy rules')
+  .requiredOption('-c, --context <file|json>', 'Context JSON file or inline JSON')
+  .option('-r, --request-id <id>', 'Request ID (auto-generated if not provided)')
+  .option('-p, --policies <ids>', 'Comma-separated policy IDs to evaluate')
+  .option('-d, --dry-run', 'Dry run mode (no side effects)')
+  .option('-t, --trace', 'Enable trace mode for debugging')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await agentEvaluate({
+      context: options.context,
+      requestId: options.requestId,
+      policies: options.policies,
+      dryRun: options.dryRun,
+      trace: options.trace,
+      json: options.json,
+    });
+  });
+
+agentCommand
+  .command('resolve')
+  .description('Resolve constraint conflicts for a given context')
+  .requiredOption('-c, --context <file|json>', 'Context JSON file or inline JSON')
+  .option('-r, --request-id <id>', 'Request ID')
+  .option('-p, --policies <ids>', 'Comma-separated policy IDs')
+  .option('-d, --dry-run', 'Dry run mode')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await agentResolve({
+      context: options.context,
+      requestId: options.requestId,
+      policies: options.policies,
+      dryRun: options.dryRun,
+      trace: true,
+      json: options.json,
+    });
+  });
+
+agentCommand
+  .command('route')
+  .description('Route a decision to appropriate enforcement layers')
+  .requiredOption('-c, --context <file|json>', 'Context JSON file or inline JSON')
+  .option('-r, --request-id <id>', 'Request ID')
+  .option('-p, --policies <ids>', 'Comma-separated policy IDs')
+  .option('-d, --dry-run', 'Dry run mode')
+  .option('-t, --trace', 'Enable trace mode')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await agentRoute({
+      context: options.context,
+      requestId: options.requestId,
+      policies: options.policies,
+      dryRun: options.dryRun,
+      trace: options.trace,
+      json: options.json,
+    });
+  });
+
+agentCommand
+  .command('info')
+  .description('Get agent registration information')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await agentInfo({ json: options.json });
+  });
+
+agentCommand
+  .command('register')
+  .description('Register agent with ruvector-service')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await agentRegister({ json: options.json });
+  });
+
+// Approval Routing Agent commands
+const approvalCommand = program
+  .command('approval')
+  .description('Approval Routing Agent commands - manage approval workflows');
+
+approvalCommand
+  .command('evaluate')
+  .description('Evaluate approval requirements for an action')
+  .requiredOption('-a, --action-type <type>', 'Action type')
+  .requiredOption('--resource-id <id>', 'Resource ID')
+  .requiredOption('--resource-type <type>', 'Resource type')
+  .requiredOption('-o, --operation <op>', 'Operation (create, read, update, delete, execute)')
+  .requiredOption('--requester <file|json>', 'Requester JSON file or inline JSON')
+  .option('-r, --request-id <id>', 'Request ID')
+  .option('--rules <rules>', 'Comma-separated approval rule IDs')
+  .option('-p, --priority <level>', 'Priority (low, normal, high, critical, emergency)')
+  .option('-c, --context <file|json>', 'Additional context JSON')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await approvalEvaluate({
+      requestId: options.requestId,
+      actionType: options.actionType,
+      resourceId: options.resourceId,
+      resourceType: options.resourceType,
+      operation: options.operation,
+      requester: options.requester,
+      rules: options.rules,
+      priority: options.priority,
+      context: options.context,
+      json: options.json,
+    });
+  });
+
+approvalCommand
+  .command('route')
+  .description('Route an action to appropriate approval workflow')
+  .requiredOption('-a, --action-type <type>', 'Action type')
+  .requiredOption('--resource-id <id>', 'Resource ID')
+  .requiredOption('--resource-type <type>', 'Resource type')
+  .requiredOption('-o, --operation <op>', 'Operation (create, read, update, delete, execute)')
+  .requiredOption('--requester <file|json>', 'Requester JSON file or inline JSON')
+  .option('-r, --request-id <id>', 'Request ID')
+  .option('--rules <rules>', 'Comma-separated approval rule IDs')
+  .option('-p, --priority <level>', 'Priority (low, normal, high, critical, emergency)')
+  .option('-c, --context <file|json>', 'Additional context JSON')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await approvalRoute({
+      requestId: options.requestId,
+      actionType: options.actionType,
+      resourceId: options.resourceId,
+      resourceType: options.resourceType,
+      operation: options.operation,
+      requester: options.requester,
+      rules: options.rules,
+      priority: options.priority,
+      context: options.context,
+      json: options.json,
+    });
+  });
+
+approvalCommand
+  .command('resolve')
+  .description('Resolve approval conflicts for an action')
+  .requiredOption('-a, --action-type <type>', 'Action type')
+  .requiredOption('--resource-id <id>', 'Resource ID')
+  .requiredOption('--resource-type <type>', 'Resource type')
+  .requiredOption('-o, --operation <op>', 'Operation (create, read, update, delete, execute)')
+  .requiredOption('--requester <file|json>', 'Requester JSON file or inline JSON')
+  .option('-r, --request-id <id>', 'Request ID')
+  .option('--rules <rules>', 'Comma-separated approval rule IDs')
+  .option('-p, --priority <level>', 'Priority (low, normal, high, critical, emergency)')
+  .option('-c, --context <file|json>', 'Additional context JSON')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await approvalResolve({
+      requestId: options.requestId,
+      actionType: options.actionType,
+      resourceId: options.resourceId,
+      resourceType: options.resourceType,
+      operation: options.operation,
+      requester: options.requester,
+      rules: options.rules,
+      priority: options.priority,
+      context: options.context,
+      json: options.json,
+    });
+  });
+
+approvalCommand
+  .command('status <request-id>')
+  .description('Get status of an approval request')
+  .option('--json', 'Output as JSON')
+  .action(async (requestId: string, options: { json?: boolean }) => {
+    await approvalStatus(requestId, { json: options.json });
+  });
+
+approvalCommand
+  .command('info')
+  .description('Get Approval Routing Agent registration information')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await approvalInfo({ json: options.json });
+  });
+
+approvalCommand
+  .command('register')
+  .description('Register Approval Routing Agent with ruvector-service')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    await approvalRegister({ json: options.json });
   });
 
 // Server commands

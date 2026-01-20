@@ -55,6 +55,8 @@ export interface IntegrationConfig {
   llmSchemaRegistryUrl?: string;
   llmConfigManagerUrl?: string;
   llmObservatoryUrl?: string;
+  // RuVector Service for DecisionEvent persistence
+  ruvectorServiceUrl?: string;
 }
 
 export interface PerformanceConfig {
@@ -74,4 +76,5 @@ export interface AppConfig {
   observability: ObservabilityConfig;
   integrations: IntegrationConfig;
   performance: PerformanceConfig;
+  environment?: string;
 }

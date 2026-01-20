@@ -14,6 +14,8 @@ import { cacheManager } from '@cache/cache-manager';
 import { errorHandler, notFoundHandler, timeoutHandler } from './middleware/error-handler';
 import policyRoutes from './routes/policies';
 import evaluationRoutes from './routes/evaluations';
+import agentRoutes from './routes/agents';
+import approvalRoutingRoutes from './routes/approval-routing';
 
 export function createApp(): Express {
   const app = express();
@@ -98,12 +100,36 @@ export function createApp(): Express {
         ready: '/ready',
         policies: '/api/policies',
         evaluate: '/api/evaluate',
+        agent: {
+          evaluate: '/api/agent/evaluate',
+          resolve: '/api/agent/resolve',
+          route: '/api/agent/route',
+          info: '/api/agent/info',
+          health: '/api/agent/health',
+        },
+        'constraint-solver': {
+          resolve: '/api/constraint-solver/resolve',
+          analyze: '/api/constraint-solver/analyze',
+          explain: '/api/constraint-solver/explain',
+          info: '/api/constraint-solver/info',
+          health: '/api/constraint-solver/health',
+        },
+        'approval-routing': {
+          evaluate: '/api/approval-routing/evaluate',
+          route: '/api/approval-routing/route',
+          resolve: '/api/approval-routing/resolve',
+          status: '/api/approval-routing/status/:requestId',
+          info: '/api/approval-routing/info',
+          health: '/api/approval-routing/health',
+        },
       },
     });
   });
 
   app.use('/api/policies', policyRoutes);
   app.use('/api/evaluate', evaluationRoutes);
+  app.use('/api/agent', agentRoutes);
+  app.use('/api/approval-routing', approvalRoutingRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
