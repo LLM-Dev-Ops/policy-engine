@@ -1,0 +1,35 @@
+{
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-4",
+    "prompt": "Hello, how are you?",
+    "max_tokens": 500,
+    "temperature": 0.7
+  },
+  "user": {
+    "id": "user-123",
+    "email": "user@example.com",
+    "roles": ["developer"],
+    "permissions": ["llm:read", "llm:execute"]
+  },
+  "team": {
+    "id": "team-456",
+    "name": "Engineering",
+    "tier": "professional"
+  },
+  "project": {
+    "id": "project-789",
+    "name": "AI Assistant",
+    "environment": "development"
+  },
+  "request": {
+    "id": "req-001",
+    "timestamp": 1704067200000,
+    "ip_address": "192.168.1.1",
+    "user_agent": "Mozilla/5.0"
+  },
+  "metadata": {
+    "source": "web-app",
+    "session_id": "sess-abc123"
+  }
+}
