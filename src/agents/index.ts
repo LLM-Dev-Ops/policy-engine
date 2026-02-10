@@ -9,6 +9,14 @@
 // Export core contracts
 export * from './contracts/decision-event';
 
+// Export execution system types for consumers
+export type {
+  ExecutionContext,
+  ExecutionSpan,
+  ExecutionResult,
+  Artifact,
+} from '../execution/types';
+
 // Export Policy Enforcement Agent (fully implemented)
 export {
   PolicyEnforcementAgent,

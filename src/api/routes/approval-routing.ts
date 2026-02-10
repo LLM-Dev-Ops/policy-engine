@@ -4,6 +4,9 @@
  * REST API routes for the Approval Routing Agent.
  * These routes expose the agent as HTTP endpoints for deployment
  * as Google Cloud Edge Functions.
+ *
+ * POST routes require execution context headers (x-execution-id,
+ * x-parent-span-id) enforced by executionContextMiddleware.
  */
 import { Router } from 'express';
 import {
@@ -14,6 +17,7 @@ import {
   handleInfo,
   handleHealth,
 } from '../../agents/approval-routing/handler';
+import { executionContextMiddleware } from '../../execution/middleware';
 
 const router = Router();
 
@@ -21,6 +25,7 @@ const router = Router();
  * POST /api/approval-routing/evaluate
  *
  * Evaluate approval requirements for an action.
+ * Requires: x-execution-id, x-parent-span-id headers
  *
  * Request Body:
  * {
@@ -46,15 +51,17 @@ const router = Router();
  * Response:
  * {
  *   "success": true,
- *   "data": { ApprovalDecisionEvent }
+ *   "data": { ApprovalDecisionEvent },
+ *   "execution": { repo_span, agent_spans }
  * }
  */
-router.post('/evaluate', handleEvaluate);
+router.post('/evaluate', executionContextMiddleware, handleEvaluate);
 
 /**
  * POST /api/approval-routing/route
  *
  * Route an action to appropriate approval workflow.
+ * Requires: x-execution-id, x-parent-span-id headers
  *
  * Request Body:
  * {
@@ -67,16 +74,18 @@ router.post('/evaluate', handleEvaluate);
  * Response:
  * {
  *   "success": true,
- *   "data": { ApprovalDecisionEvent }
+ *   "data": { ApprovalDecisionEvent },
+ *   "execution": { repo_span, agent_spans }
  * }
  */
-router.post('/route', handleRoute);
+router.post('/route', executionContextMiddleware, handleRoute);
 
 /**
  * POST /api/approval-routing/resolve
  *
  * Resolve approval conflicts for an action.
  * Returns decision with conflict resolution details.
+ * Requires: x-execution-id, x-parent-span-id headers
  *
  * Request Body:
  * {
@@ -88,10 +97,11 @@ router.post('/route', handleRoute);
  * Response:
  * {
  *   "success": true,
- *   "data": { ApprovalDecisionEvent with resolution details }
+ *   "data": { ApprovalDecisionEvent with resolution details },
+ *   "execution": { repo_span, agent_spans }
  * }
  */
-router.post('/resolve', handleResolve);
+router.post('/resolve', executionContextMiddleware, handleResolve);
 
 /**
  * GET /api/approval-routing/status/:requestId

@@ -26,6 +26,9 @@ export { config } from './utils/config';
 export { default as logger } from './utils/logger';
 export * from './utils/errors';
 
+// Agentics Execution System exports
+export * from './execution';
+
 // Phase 4 Layer 1 - Governance & FinOps exports
 export * from './governance';
 export {

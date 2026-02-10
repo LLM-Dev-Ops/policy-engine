@@ -8,6 +8,11 @@
  * - Stateless execution
  * - No local persistence
  * - Deterministic behavior
+ *
+ * EXECUTION SYSTEM:
+ * - All POST endpoints require execution context (x-execution-id, x-parent-span-id)
+ * - Emits repo-level and agent-level spans per the Agentics contract
+ * - Returns ExecutionResult with full span hierarchy
  */
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,6 +23,8 @@ import {
 } from './agent';
 import { PolicyEnforcementInput, DecisionEvent } from '../contracts/decision-event';
 import { PolicyRepository } from '../../db/models/policy-repository';
+import { executeAgent, buildExecutionResult } from '../../execution/executor';
+import { ExecutionSpan } from '../../execution/types';
 import logger from '@utils/logger';
 
 /**
@@ -28,19 +35,6 @@ interface EvaluateRequest {
   policy_ids?: string[];
   dry_run?: boolean;
   trace?: boolean;
-}
-
-/**
- * HTTP Response body
- */
-interface AgentResponse {
-  success: boolean;
-  data?: DecisionEvent;
-  error?: {
-    code: string;
-    message: string;
-    details?: unknown;
-  };
 }
 
 /**
@@ -70,12 +64,25 @@ async function createAgentWithPolicies(): Promise<PolicyEnforcementAgent> {
 }
 
 /**
+ * Decision event artifact extractor for span attachment
+ */
+function extractDecisionArtifact(event: DecisionEvent) {
+  return {
+    id: event.event_id,
+    type: 'decision_event',
+    reference: event.event_id,
+  };
+}
+
+/**
  * Edge Function Handler: POST /agent/evaluate
  *
  * Evaluate a request against policy rules.
+ * Requires execution context headers (enforced by middleware).
  */
 export async function handleEvaluate(req: Request, res: Response): Promise<void> {
   const requestId = req.headers['x-request-id']?.toString() || uuidv4();
+  const repoSpan: ExecutionSpan = res.locals.repoSpan;
 
   logger.info({ requestId, path: '/agent/evaluate' }, 'Handling evaluate request');
 
@@ -83,13 +90,11 @@ export async function handleEvaluate(req: Request, res: Response): Promise<void>
     // Validate request
     const validation = validateRequest(req.body);
     if (!validation.valid) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_REQUEST',
-          message: validation.error,
-        },
-      } as AgentResponse);
+      const result = buildExecutionResult(repoSpan, [], undefined, {
+        code: 'INVALID_REQUEST',
+        message: validation.error!,
+      });
+      res.status(400).json(result);
       return;
     }
 
@@ -104,25 +109,28 @@ export async function handleEvaluate(req: Request, res: Response): Promise<void>
       trace: body.trace,
     };
 
-    // Create agent and evaluate
-    const agent = await createAgentWithPolicies();
-    const decisionEvent = await agent.evaluate(input);
+    // Execute agent with span tracking
+    const { data: decisionEvent, agentSpan } = await executeAgent(
+      repoSpan,
+      AGENT_ID,
+      async () => {
+        const agent = await createAgentWithPolicies();
+        return agent.evaluate(input);
+      },
+      extractDecisionArtifact,
+    );
 
-    res.status(200).json({
-      success: true,
-      data: decisionEvent,
-    } as AgentResponse);
+    const result = buildExecutionResult(repoSpan, [agentSpan], decisionEvent);
+    res.status(200).json(result);
   } catch (error) {
     logger.error({ requestId, error }, 'Evaluate request failed');
 
-    res.status(500).json({
-      success: false,
-      error: {
-        code: 'EVALUATION_ERROR',
-        message: error instanceof Error ? error.message : 'Unknown error',
-        details: process.env.NODE_ENV === 'development' ? error : undefined,
-      },
-    } as AgentResponse);
+    const result = buildExecutionResult(repoSpan, [], undefined, {
+      code: 'EVALUATION_ERROR',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      details: process.env.NODE_ENV === 'development' ? error : undefined,
+    });
+    res.status(500).json(result);
   }
 }
 
@@ -130,9 +138,12 @@ export async function handleEvaluate(req: Request, res: Response): Promise<void>
  * Edge Function Handler: POST /agent/resolve
  *
  * Resolve constraint conflicts for a given context.
+ * Always enables trace mode for detailed conflict resolution.
+ * Requires execution context headers (enforced by middleware).
  */
 export async function handleResolve(req: Request, res: Response): Promise<void> {
   const requestId = req.headers['x-request-id']?.toString() || uuidv4();
+  const repoSpan: ExecutionSpan = res.locals.repoSpan;
 
   logger.info({ requestId, path: '/agent/resolve' }, 'Handling resolve request');
 
@@ -140,13 +151,11 @@ export async function handleResolve(req: Request, res: Response): Promise<void> 
     // Validate request
     const validation = validateRequest(req.body);
     if (!validation.valid) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_REQUEST',
-          message: validation.error,
-        },
-      } as AgentResponse);
+      const result = buildExecutionResult(repoSpan, [], undefined, {
+        code: 'INVALID_REQUEST',
+        message: validation.error!,
+      });
+      res.status(400).json(result);
       return;
     }
 
@@ -161,25 +170,28 @@ export async function handleResolve(req: Request, res: Response): Promise<void> 
       trace: true, // Always enable trace for resolve
     };
 
-    // Create agent and resolve
-    const agent = await createAgentWithPolicies();
-    const decisionEvent = await agent.resolve(input);
+    // Execute agent with span tracking
+    const { data: decisionEvent, agentSpan } = await executeAgent(
+      repoSpan,
+      AGENT_ID,
+      async () => {
+        const agent = await createAgentWithPolicies();
+        return agent.resolve(input);
+      },
+      extractDecisionArtifact,
+    );
 
-    res.status(200).json({
-      success: true,
-      data: decisionEvent,
-    } as AgentResponse);
+    const result = buildExecutionResult(repoSpan, [agentSpan], decisionEvent);
+    res.status(200).json(result);
   } catch (error) {
     logger.error({ requestId, error }, 'Resolve request failed');
 
-    res.status(500).json({
-      success: false,
-      error: {
-        code: 'RESOLUTION_ERROR',
-        message: error instanceof Error ? error.message : 'Unknown error',
-        details: process.env.NODE_ENV === 'development' ? error : undefined,
-      },
-    } as AgentResponse);
+    const result = buildExecutionResult(repoSpan, [], undefined, {
+      code: 'RESOLUTION_ERROR',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      details: process.env.NODE_ENV === 'development' ? error : undefined,
+    });
+    res.status(500).json(result);
   }
 }
 
@@ -187,9 +199,11 @@ export async function handleResolve(req: Request, res: Response): Promise<void> 
  * Edge Function Handler: POST /agent/route
  *
  * Route a decision to appropriate enforcement layers.
+ * Requires execution context headers (enforced by middleware).
  */
 export async function handleRoute(req: Request, res: Response): Promise<void> {
   const requestId = req.headers['x-request-id']?.toString() || uuidv4();
+  const repoSpan: ExecutionSpan = res.locals.repoSpan;
 
   logger.info({ requestId, path: '/agent/route' }, 'Handling route request');
 
@@ -197,13 +211,11 @@ export async function handleRoute(req: Request, res: Response): Promise<void> {
     // Validate request
     const validation = validateRequest(req.body);
     if (!validation.valid) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_REQUEST',
-          message: validation.error,
-        },
-      } as AgentResponse);
+      const result = buildExecutionResult(repoSpan, [], undefined, {
+        code: 'INVALID_REQUEST',
+        message: validation.error!,
+      });
+      res.status(400).json(result);
       return;
     }
 
@@ -218,25 +230,28 @@ export async function handleRoute(req: Request, res: Response): Promise<void> {
       trace: body.trace,
     };
 
-    // Create agent and route
-    const agent = await createAgentWithPolicies();
-    const decisionEvent = await agent.route(input);
+    // Execute agent with span tracking
+    const { data: decisionEvent, agentSpan } = await executeAgent(
+      repoSpan,
+      AGENT_ID,
+      async () => {
+        const agent = await createAgentWithPolicies();
+        return agent.route(input);
+      },
+      extractDecisionArtifact,
+    );
 
-    res.status(200).json({
-      success: true,
-      data: decisionEvent,
-    } as AgentResponse);
+    const result = buildExecutionResult(repoSpan, [agentSpan], decisionEvent);
+    res.status(200).json(result);
   } catch (error) {
     logger.error({ requestId, error }, 'Route request failed');
 
-    res.status(500).json({
-      success: false,
-      error: {
-        code: 'ROUTING_ERROR',
-        message: error instanceof Error ? error.message : 'Unknown error',
-        details: process.env.NODE_ENV === 'development' ? error : undefined,
-      },
-    } as AgentResponse);
+    const result = buildExecutionResult(repoSpan, [], undefined, {
+      code: 'ROUTING_ERROR',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      details: process.env.NODE_ENV === 'development' ? error : undefined,
+    });
+    res.status(500).json(result);
   }
 }
 

@@ -4,6 +4,9 @@
  * REST API routes for the Policy Enforcement Agent.
  * These routes expose the agent as HTTP endpoints for deployment
  * as Google Cloud Edge Functions.
+ *
+ * POST routes require execution context headers (x-execution-id,
+ * x-parent-span-id) enforced by executionContextMiddleware.
  */
 import { Router } from 'express';
 import {
@@ -13,6 +16,7 @@ import {
   handleInfo,
   handleHealth,
 } from '../../agents/policy-enforcement/handler';
+import { executionContextMiddleware } from '../../execution/middleware';
 
 const router = Router();
 
@@ -20,6 +24,7 @@ const router = Router();
  * POST /api/agent/evaluate
  *
  * Evaluate a request against policy rules.
+ * Requires: x-execution-id, x-parent-span-id headers
  *
  * Request Body:
  * {
@@ -32,16 +37,18 @@ const router = Router();
  * Response:
  * {
  *   "success": true,
- *   "data": { DecisionEvent }
+ *   "data": { DecisionEvent },
+ *   "execution": { repo_span, agent_spans }
  * }
  */
-router.post('/evaluate', handleEvaluate);
+router.post('/evaluate', executionContextMiddleware, handleEvaluate);
 
 /**
  * POST /api/agent/resolve
  *
  * Resolve constraint conflicts for a given context.
  * Always enables trace mode for detailed conflict resolution.
+ * Requires: x-execution-id, x-parent-span-id headers
  *
  * Request Body:
  * {
@@ -53,16 +60,18 @@ router.post('/evaluate', handleEvaluate);
  * Response:
  * {
  *   "success": true,
- *   "data": { DecisionEvent with trace }
+ *   "data": { DecisionEvent with trace },
+ *   "execution": { repo_span, agent_spans }
  * }
  */
-router.post('/resolve', handleResolve);
+router.post('/resolve', executionContextMiddleware, handleResolve);
 
 /**
  * POST /api/agent/route
  *
  * Route a decision to appropriate enforcement layers.
  * Returns decision with routing metadata.
+ * Requires: x-execution-id, x-parent-span-id headers
  *
  * Request Body:
  * {
@@ -75,10 +84,11 @@ router.post('/resolve', handleResolve);
  * Response:
  * {
  *   "success": true,
- *   "data": { DecisionEvent with routing_targets }
+ *   "data": { DecisionEvent with routing_targets },
+ *   "execution": { repo_span, agent_spans }
  * }
  */
-router.post('/route', handleRoute);
+router.post('/route', executionContextMiddleware, handleRoute);
 
 /**
  * GET /api/agent/info
