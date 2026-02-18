@@ -1,0 +1,118 @@
+# Policy Engine Cloud Build Configuration
+# Builds and deploys to Google Cloud Run (agentics-dev)
+
+substitutions:
+  _SERVICE_NAME: policy-engine
+  _REGION: us-central1
+
+steps:
+  # Step 1: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest'
+      - '-f'
+      - 'Dockerfile'
+      - '.'
+    id: 'build-image'
+
+  # Step 2: Push to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
+    id: 'push-image'
+    waitFor:
+      - 'build-image'
+
+  # Step 3: Push latest tag
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest'
+    id: 'push-latest'
+    waitFor:
+      - 'build-image'
+
+  # Step 4: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--no-allow-unauthenticated'
+      - '--set-env-vars'
+      - 'SERVICE_NAME=${_SERVICE_NAME},SERVICE_VERSION=$COMMIT_SHA,NODE_ENV=production'
+      - '--set-secrets'
+      - 'DATABASE_URL=policy-engine-database-url:latest,REDIS_URL=policy-engine-redis-url:latest,JWT_SECRET=policy-engine-jwt-secret:latest,AGENTICS_PUBLIC_KEY=agentics-public-key:latest,RUVECTOR_SERVICE_URL=ruvector-service-url:latest'
+      - '--memory'
+      - '512Mi'
+      - '--cpu'
+      - '1'
+      - '--min-instances'
+      - '0'
+      - '--max-instances'
+      - '10'
+      - '--concurrency'
+      - '80'
+      - '--timeout'
+      - '60s'
+      - '--service-account'
+      - 'policy-engine-sa@$PROJECT_ID.iam.gserviceaccount.com'
+    id: 'deploy-cloud-run'
+    waitFor:
+      - 'push-image'
+
+  # Step 5: Verify deployment
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        SERVICE_URL=$(gcloud run services describe ${_SERVICE_NAME} --region ${_REGION} --format 'value(status.url)')
+        echo "Service URL: $SERVICE_URL"
+
+        # Wait for service to be ready
+        sleep 10
+
+        # Health check (unauthenticated — /health is not behind auth)
+        HEALTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$SERVICE_URL/health")
+        if [ "$HEALTH_STATUS" != "200" ]; then
+          echo "Health check failed with status: $HEALTH_STATUS"
+          exit 1
+        fi
+        echo "Health check passed!"
+
+        # Readiness check
+        READY_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$SERVICE_URL/ready")
+        if [ "$READY_STATUS" != "200" ]; then
+          echo "Readiness check failed with status: $READY_STATUS"
+          exit 1
+        fi
+        echo "Readiness check passed!"
+
+        echo "Deployment successful!"
+        echo "Service URL: $SERVICE_URL"
+    id: 'verify-deployment'
+    waitFor:
+      - 'deploy-cloud-run'
+
+images:
+  - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+
+timeout: '1200s'

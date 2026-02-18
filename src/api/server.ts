@@ -16,6 +16,7 @@ import policyRoutes from './routes/policies';
 import evaluationRoutes from './routes/evaluations';
 import agentRoutes from './routes/agents';
 import approvalRoutingRoutes from './routes/approval-routing';
+import internalEvaluateRoutes from './routes/internal-evaluate';
 
 export function createApp(): Express {
   const app = express();
@@ -122,6 +123,9 @@ export function createApp(): Express {
           info: '/api/approval-routing/info',
           health: '/api/approval-routing/health',
         },
+        internal: {
+          evaluate: '/api/v1/internal/evaluate',
+        },
       },
     });
   });
@@ -130,6 +134,7 @@ export function createApp(): Express {
   app.use('/api/evaluate', evaluationRoutes);
   app.use('/api/agent', agentRoutes);
   app.use('/api/approval-routing', approvalRoutingRoutes);
+  app.use('/api/v1/internal', internalEvaluateRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
