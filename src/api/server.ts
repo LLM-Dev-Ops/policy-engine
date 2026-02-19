@@ -53,10 +53,10 @@ export function createApp(): Express {
       const dbHealthy = await db.ping();
       const cacheHealth = await cacheManager.healthCheck();
 
-      const healthy = dbHealthy && cacheHealth.healthy;
+      const status = !dbHealthy ? 'unhealthy' : !cacheHealth.healthy ? 'degraded' : 'healthy';
 
-      res.status(healthy ? 200 : 503).json({
-        status: healthy ? 'healthy' : 'unhealthy',
+      res.status(dbHealthy ? 200 : 503).json({
+        status,
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
         database: dbHealthy ? 'connected' : 'disconnected',
