@@ -2,7 +2,7 @@
   "name": "@llm-dev-ops/policy-engine",
   "version": "1.0.0",
   "description": "Declarative policy layer for cost, security, and compliance enforcement in LLM DevOps ecosystem",
-  "main": "dist/index.js",
+  "main": "dist/functions/handler.js",
   "types": "dist/index.d.ts",
   "bin": {
     "llm-policy": "dist/cli/index.js"
@@ -23,7 +23,8 @@
     "start:api": "node dist/api/server.js",
     "start:grpc": "node dist/grpc/server.js",
     "db:migrate": "node dist/db/migrate.js",
-    "db:seed": "node dist/db/seed.js"
+    "db:seed": "node dist/db/seed.js",
+    "deploy:functions": "gcloud functions deploy policy-engine-agents --runtime nodejs20 --trigger-http --region us-central1 --project agentics-dev --entry-point handler --memory 512MB --timeout 30s --no-allow-unauthenticated"
   },
   "keywords": [
     "llm",

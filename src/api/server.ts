@@ -16,6 +16,7 @@ import policyRoutes from './routes/policies';
 import evaluationRoutes from './routes/evaluations';
 import agentRoutes from './routes/agents';
 import approvalRoutingRoutes from './routes/approval-routing';
+import constraintSolverRoutes from './routes/constraint-solver';
 import internalEvaluateRoutes from './routes/internal-evaluate';
 
 export function createApp(): Express {
@@ -133,6 +134,7 @@ export function createApp(): Express {
   app.use('/api/policies', policyRoutes);
   app.use('/api/evaluate', evaluationRoutes);
   app.use('/api/agent', agentRoutes);
+  app.use('/api/constraint-solver', constraintSolverRoutes);
   app.use('/api/approval-routing', approvalRoutingRoutes);
   app.use('/api/v1/internal', internalEvaluateRoutes);
 

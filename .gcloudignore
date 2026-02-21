@@ -1,8 +1,11 @@
-# Cloud Build ignore file
-# This overrides .gitignore for cloud builds
+# Cloud Function ignore file
+# This overrides .gitignore for gcloud functions deploy
 
 # Include package-lock.json (needed for npm ci)
 !package-lock.json
+
+# Include dist/ (Cloud Functions need pre-built JS)
+!dist/
 
 # Ignore development files
 .git
@@ -15,10 +18,14 @@ docs/
 examples/
 plans/
 
+# Ignore source TypeScript (dist/ has compiled output)
+src/
+
 # Ignore test files
 **/*.test.ts
 **/*.spec.ts
-src/test/
+**/*.test.js
+**/*.spec.js
 coverage/
 .nyc_output/
 
@@ -27,16 +34,25 @@ coverage/
 .env.*
 !.env.example
 
-# Ignore build artifacts
-dist/
+# Ignore build logs
 *.log
 
-# Ignore Rust artifacts (if any)
+# Ignore Rust artifacts
 target/
 Cargo.lock
+Cargo.toml
+*.rs
 
-# Ignore K8s configs (not needed for container build)
+# Ignore K8s configs
 k8s/
+
+# Ignore deployment configs (not needed inside the function)
+deploy/
+Dockerfile
+docker-compose*.yml
+
+# Ignore proto files
+proto/
 
 # Ignore node_modules (will be installed fresh)
 node_modules/

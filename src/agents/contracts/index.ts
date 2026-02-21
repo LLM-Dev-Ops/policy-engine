@@ -7,3 +7,4 @@
  */
 export * from './decision-event';
 export * from './approval-routing';
+export * from './constraint-solver';
