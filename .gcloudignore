@@ -1,11 +1,12 @@
 # Cloud Function ignore file
 # This overrides .gitignore for gcloud functions deploy
+#
+# Cloud Functions Gen2 runs `npm run build` (tsc) remotely,
+# so src/ must be uploaded. dist/ is excluded since it will
+# be rebuilt during the cloud build step.
 
 # Include package-lock.json (needed for npm ci)
 !package-lock.json
-
-# Include dist/ (Cloud Functions need pre-built JS)
-!dist/
 
 # Ignore development files
 .git
@@ -18,14 +19,12 @@ docs/
 examples/
 plans/
 
-# Ignore source TypeScript (dist/ has compiled output)
-src/
-
 # Ignore test files
 **/*.test.ts
 **/*.spec.ts
 **/*.test.js
 **/*.spec.js
+src/test/
 coverage/
 .nyc_output/
 
@@ -34,14 +33,15 @@ coverage/
 .env.*
 !.env.example
 
-# Ignore build logs
+# Ignore build artifacts (rebuilt in cloud)
+dist/
 *.log
 
 # Ignore Rust artifacts
 target/
 Cargo.lock
 Cargo.toml
-*.rs
+**/*.rs
 
 # Ignore K8s configs
 k8s/
