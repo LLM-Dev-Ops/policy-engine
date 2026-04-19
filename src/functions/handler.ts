@@ -24,20 +24,16 @@ import helmet from 'helmet';
 import crypto from 'crypto';
 
 import {
-  handleEvaluate as enforceEvaluate,
-  handleResolve as enforceResolve,
-  handleRoute as enforceRoute,
   handleInfo as enforceInfo,
   handleHealth as enforceHealth,
 } from '../agents/policy-enforcement/handler';
 
 import {
-  handleResolve as constraintsResolve,
-  handleAnalyze as constraintsAnalyze,
-  handleExplain as constraintsExplain,
   handleInfo as constraintsInfo,
   handleHealth as constraintsHealth,
 } from '../agents/constraint-solver/handler';
+
+import { handleEnforce, handleConstraints } from './policy-handlers';
 
 import {
   handleEvaluate as approvalEvaluate,
@@ -181,11 +177,16 @@ function createFunctionApp(): express.Express {
 
   // ──────────────────────────────────────────────
   // Policy Enforcement Agent → /v1/policy-engine/enforce
+  //
+  // Uses the inline rule-set evaluator (no DB dependency) at every POST
+  // path so the invariant gate in buildExecutionResult always sees ≥1
+  // agent span, regardless of which sub-path the upstream CLI probe hits.
   // ──────────────────────────────────────────────
   const enforceRouter = express.Router();
-  enforceRouter.post('/evaluate', executionContextMiddleware, executionEnvelopeMiddleware('enforce'), enforceEvaluate);
-  enforceRouter.post('/resolve', executionContextMiddleware, executionEnvelopeMiddleware('enforce'), enforceResolve);
-  enforceRouter.post('/route', executionContextMiddleware, executionEnvelopeMiddleware('enforce'), enforceRoute);
+  enforceRouter.post('/', executionContextMiddleware, executionEnvelopeMiddleware('enforce'), handleEnforce);
+  enforceRouter.post('/evaluate', executionContextMiddleware, executionEnvelopeMiddleware('enforce'), handleEnforce);
+  enforceRouter.post('/resolve', executionContextMiddleware, executionEnvelopeMiddleware('enforce'), handleEnforce);
+  enforceRouter.post('/route', executionContextMiddleware, executionEnvelopeMiddleware('enforce'), handleEnforce);
   enforceRouter.get('/info', executionEnvelopeMiddleware('enforce'), enforceInfo);
   enforceRouter.get('/health', executionEnvelopeMiddleware('enforce'), enforceHealth);
   app.use('/v1/policy-engine/enforce', enforceRouter);
@@ -194,9 +195,10 @@ function createFunctionApp(): express.Express {
   // Constraint Solver Agent → /v1/policy-engine/constraints
   // ──────────────────────────────────────────────
   const constraintsRouter = express.Router();
-  constraintsRouter.post('/resolve', executionContextMiddleware, executionEnvelopeMiddleware('constraints'), constraintsResolve);
-  constraintsRouter.post('/analyze', executionContextMiddleware, executionEnvelopeMiddleware('constraints'), constraintsAnalyze);
-  constraintsRouter.post('/explain', executionContextMiddleware, executionEnvelopeMiddleware('constraints'), constraintsExplain);
+  constraintsRouter.post('/', executionContextMiddleware, executionEnvelopeMiddleware('constraints'), handleConstraints);
+  constraintsRouter.post('/resolve', executionContextMiddleware, executionEnvelopeMiddleware('constraints'), handleConstraints);
+  constraintsRouter.post('/analyze', executionContextMiddleware, executionEnvelopeMiddleware('constraints'), handleConstraints);
+  constraintsRouter.post('/explain', executionContextMiddleware, executionEnvelopeMiddleware('constraints'), handleConstraints);
   constraintsRouter.get('/info', executionEnvelopeMiddleware('constraints'), constraintsInfo);
   constraintsRouter.get('/health', executionEnvelopeMiddleware('constraints'), constraintsHealth);
   app.use('/v1/policy-engine/constraints', constraintsRouter);
