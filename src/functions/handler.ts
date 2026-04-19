@@ -207,6 +207,7 @@ function createFunctionApp(): express.Express {
   // Approval Routing Agent → /v1/policy-engine/approval
   // ──────────────────────────────────────────────
   const approvalRouter = express.Router();
+  approvalRouter.post('/', executionContextMiddleware, executionEnvelopeMiddleware('approval'), approvalEvaluate);
   approvalRouter.post('/evaluate', executionContextMiddleware, executionEnvelopeMiddleware('approval'), approvalEvaluate);
   approvalRouter.post('/route', executionContextMiddleware, executionEnvelopeMiddleware('approval'), approvalRoute);
   approvalRouter.post('/resolve', executionContextMiddleware, executionEnvelopeMiddleware('approval'), approvalResolve);
