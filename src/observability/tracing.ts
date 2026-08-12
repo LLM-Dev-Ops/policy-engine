@@ -48,7 +48,8 @@ export class TracingService {
         endpoint: process.env.JAEGER_ENDPOINT || 'http://localhost:14268/api/traces',
       });
 
-      this.provider.addSpanProcessor(new BatchSpanProcessor(jaegerExporter) as any);
+      // Exporter packages currently resolve two structurally compatible OTel minor lines.
+      this.provider.addSpanProcessor(new BatchSpanProcessor(jaegerExporter as any));
 
       this.provider.register();
 
