@@ -3,8 +3,7 @@
 //! This module provides multi-layer caching for policy decisions to improve
 //! evaluation performance.
 
-use crate::api::{EvaluationContext, PolicyDecision};
-use crate::api::engine::CacheStats;
+use crate::api::{CacheStats, EvaluationContext, PolicyDecision};
 
 use lru::LruCache;
 use parking_lot::Mutex;

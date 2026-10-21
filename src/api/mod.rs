@@ -9,4 +9,4 @@ mod engine;
 
 pub use context::{EvaluationContext, EvaluationContextBuilder, LlmContext, RequestContext, UserContext};
 pub use decision::PolicyDecision;
-pub use engine::{PolicyEngine, PolicyEngineBuilder};
+pub use engine::{CacheStats, PolicyEngine, PolicyEngineBuilder};

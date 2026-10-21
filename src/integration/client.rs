@@ -36,6 +36,18 @@ impl<T> IntegrationResult<T> {
             _ => default,
         }
     }
+
+    /// Transform a successful value while preserving degradation and error states.
+    pub fn map<U, F>(self, transform: F) -> IntegrationResult<U>
+    where
+        F: FnOnce(T) -> U,
+    {
+        match self {
+            IntegrationResult::Success(value) => IntegrationResult::Success(transform(value)),
+            IntegrationResult::Unavailable => IntegrationResult::Unavailable,
+            IntegrationResult::Error(error) => IntegrationResult::Error(error),
+        }
+    }
 }
 
 /// Base client for integrations.
@@ -133,5 +145,35 @@ impl IntegrationClient {
             Ok(response) => response.status().is_success(),
             Err(_) => false,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::IntegrationResult;
+
+    #[test]
+    fn map_transforms_success() {
+        let result = IntegrationResult::Success(21).map(|value| value * 2);
+
+        assert!(matches!(result, IntegrationResult::Success(42)));
+    }
+
+    #[test]
+    fn map_preserves_unavailable() {
+        let result = IntegrationResult::<u32>::Unavailable.map(|value| value * 2);
+
+        assert!(matches!(result, IntegrationResult::Unavailable));
+    }
+
+    #[test]
+    fn map_preserves_error() {
+        let result = IntegrationResult::<u32>::Error("request failed".to_string())
+            .map(|value| value * 2);
+
+        assert!(matches!(
+            result,
+            IntegrationResult::Error(message) if message == "request failed"
+        ));
     }
 }
