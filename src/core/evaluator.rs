@@ -46,28 +46,29 @@ impl Evaluator {
 
             let policy_result = self.evaluate_policy(policy, context)?;
 
-            if policy_result.decision == DecisionType::Deny {
-                // Deny takes precedence
-                result = policy_result;
-                result.matched_policies = vec![policy.id.clone()];
-                break;
-            }
-
-            if policy_result.decision == DecisionType::Warn {
-                // Collect warnings
-                if result.decision == DecisionType::Allow {
+            match policy_result.decision {
+                DecisionType::Deny => {
+                    // Deny takes precedence.
                     result = policy_result;
+                    result.matched_policies = vec![policy.id.clone()];
+                    break;
                 }
-                matched_policies.push(policy.id.clone());
-            }
-
-            if policy_result.decision == DecisionType::Modify {
-                // Merge modifications
-                result.decision = DecisionType::Modify;
-                for (key, value) in policy_result.modifications {
-                    result.modifications.insert(key, value);
+                DecisionType::Warn => {
+                    // Preserve the first warning while continuing to collect matches.
+                    if result.decision == DecisionType::Allow {
+                        result = policy_result.clone();
+                    }
+                    matched_policies.push(policy.id.clone());
                 }
-                matched_policies.push(policy.id.clone());
+                DecisionType::Modify => {
+                    // Merge modifications without consuming the policy result.
+                    result.decision = DecisionType::Modify;
+                    for (key, value) in &policy_result.modifications {
+                        result.modifications.insert(key.clone(), value.clone());
+                    }
+                    matched_policies.push(policy.id.clone());
+                }
+                DecisionType::Allow => {}
             }
 
             matched_rules.extend(policy_result.matched_rules);

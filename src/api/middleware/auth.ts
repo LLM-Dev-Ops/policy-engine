@@ -20,6 +20,46 @@ export interface AuthRequest extends Request {
   user?: AuthUser;
 }
 
+type AuthPayload = jwt.JwtPayload & {
+  id?: unknown;
+  email?: unknown;
+  roles?: unknown;
+  permissions?: unknown;
+};
+
+const stringArrayClaim = (value: unknown, claim: string): string[] => {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.some((item) => typeof item !== 'string')) {
+    throw new AuthenticationError(`Invalid ${claim} claim`);
+  }
+  return value;
+};
+
+const verifyJwtUser = (token: string): AuthUser => {
+  const decoded = jwt.verify(token, config.security.jwtSecret, {
+    algorithms: [config.security.jwtAlgorithm],
+    issuer: config.security.jwtIssuer,
+    audience: config.security.jwtAudience,
+  });
+
+  if (typeof decoded === 'string') {
+    throw new AuthenticationError('Invalid token payload');
+  }
+
+  const payload = decoded as AuthPayload;
+  const id = typeof payload.sub === 'string' ? payload.sub : payload.id;
+  if (typeof id !== 'string' || id.length === 0 || typeof payload.email !== 'string') {
+    throw new AuthenticationError('Invalid identity claims');
+  }
+
+  return {
+    id,
+    email: payload.email,
+    roles: stringArrayClaim(payload.roles, 'roles'),
+    permissions: stringArrayClaim(payload.permissions, 'permissions'),
+  };
+};
+
 /**
  * JWT authentication middleware
  */
@@ -37,14 +77,7 @@ export const authenticate = async (
       const token = authHeader.substring(7);
 
       try {
-        const decoded = jwt.verify(token, config.security.jwtSecret) as any;
-
-        req.user = {
-          id: decoded.sub || decoded.id,
-          email: decoded.email,
-          roles: decoded.roles || [],
-          permissions: decoded.permissions || [],
-        };
+        req.user = verifyJwtUser(token);
 
         logger.debug({ userId: req.user.id }, 'User authenticated via JWT');
         next();
@@ -115,14 +148,7 @@ export const optionalAuth = async (
       const token = authHeader.substring(7);
 
       try {
-        const decoded = jwt.verify(token, config.security.jwtSecret) as any;
-
-        req.user = {
-          id: decoded.sub || decoded.id,
-          email: decoded.email,
-          roles: decoded.roles || [],
-          permissions: decoded.permissions || [],
-        };
+        req.user = verifyJwtUser(token);
       } catch (error) {
         logger.debug('Optional auth: Invalid token, continuing without auth');
       }
@@ -219,6 +245,9 @@ export const generateToken = (user: AuthUser): string => {
     config.security.jwtSecret,
     {
       expiresIn: config.security.jwtExpiresIn,
+      algorithm: config.security.jwtAlgorithm,
+      issuer: config.security.jwtIssuer,
+      audience: config.security.jwtAudience,
     } as jwt.SignOptions,
   );
 };
@@ -228,14 +257,7 @@ export const generateToken = (user: AuthUser): string => {
  */
 export const verifyToken = (token: string): AuthUser | null => {
   try {
-    const decoded = jwt.verify(token, config.security.jwtSecret) as any;
-
-    return {
-      id: decoded.sub || decoded.id,
-      email: decoded.email,
-      roles: decoded.roles || [],
-      permissions: decoded.permissions || [],
-    };
+    return verifyJwtUser(token);
   } catch (error) {
     return null;
   }

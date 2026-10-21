@@ -41,16 +41,19 @@ impl PolicyBundleAdapter {
             .map(|p| {
                 let rules: Vec<serde_json::Value> = (0..rules_per_policy)
                     .map(|r| {
+                        let operator = ["EQUALS", "GREATER_THAN", "LESS_THAN", "IN"][r % 4];
+                        let decision = ["ALLOW", "DENY", "WARN", "MODIFY"][r % 4];
+
                         json!({
                             "id": format!("rule-{}-{}", p, r),
                             "enabled": true,
                             "condition": {
                                 "field": format!("context.field_{}", r % 10),
-                                "operator": ["EQUALS", "GREATER_THAN", "LESS_THAN", "IN"][r % 4],
+                                "operator": operator,
                                 "value": r * 10
                             },
                             "action": {
-                                "decision": ["ALLOW", "DENY", "WARN", "MODIFY"][r % 4],
+                                "decision": decision,
                                 "reason": format!("Rule {} of policy {}", r, p)
                             }
                         })

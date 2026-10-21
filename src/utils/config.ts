@@ -6,11 +6,25 @@ import { AppConfig } from '../types/config';
 
 dotenv.config();
 
+const jwtAlgorithm = process.env.JWT_ALGORITHM || 'HS256';
+if (!['HS256', 'HS384', 'HS512'].includes(jwtAlgorithm)) {
+  throw new Error(`Unsupported JWT_ALGORITHM: ${jwtAlgorithm}`);
+}
+
+const jwtSecret = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+if (
+  (process.env.NODE_ENV === 'production' || process.env.ENVIRONMENT === 'production') &&
+  jwtSecret === 'your-secret-key-change-in-production'
+) {
+  throw new Error('JWT_SECRET must be configured in production');
+}
+
 export const config: AppConfig = {
   nodeEnv: process.env.NODE_ENV || 'development',
 
   database: {
-    url: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/llm_policy_engine',
+    url:
+      process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/llm_policy_engine',
     poolMin: parseInt(process.env.DATABASE_POOL_MIN || '2', 10),
     poolMax: parseInt(process.env.DATABASE_POOL_MAX || '10', 10),
     ssl: process.env.DATABASE_SSL === 'true',
@@ -36,8 +50,11 @@ export const config: AppConfig = {
   },
 
   security: {
-    jwtSecret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
+    jwtSecret,
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '24h',
+    jwtAlgorithm: jwtAlgorithm as AppConfig['security']['jwtAlgorithm'],
+    jwtIssuer: process.env.JWT_ISSUER || 'llm-policy-engine',
+    jwtAudience: process.env.JWT_AUDIENCE || 'llm-policy-engine-api',
     apiKeyHeader: process.env.API_KEY_HEADER || 'X-API-Key',
   },
 

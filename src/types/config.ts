@@ -31,6 +31,9 @@ export interface ServerConfig {
 export interface SecurityConfig {
   jwtSecret: string;
   jwtExpiresIn: string;
+  jwtAlgorithm: 'HS256' | 'HS384' | 'HS512';
+  jwtIssuer: string;
+  jwtAudience: string;
   apiKeyHeader?: string;
 }
 
