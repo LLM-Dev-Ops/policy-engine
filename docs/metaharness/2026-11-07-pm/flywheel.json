@@ -1,0 +1,1083 @@
+{
+  "parentHash": "89f1a85ec974d1f649dd08096e6f6de20d272ab42bd613d04906a258a2b05484",
+  "candidateHash": "2dfe8e2bf61323228dc559d2df5c21211fe3dc147c567203914dff9d0084d771",
+  "trials": [
+    {
+      "trial": 0,
+      "root": "/tmp/pol7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": false
+          },
+          {
+            "id": "inherited-nested",
+            "passed": false
+          },
+          {
+            "id": "constructor-chain",
+            "passed": false
+          },
+          {
+            "id": "prototype-chain",
+            "passed": false
+          },
+          {
+            "id": "inherited-array",
+            "passed": false
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": false
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 0,
+      "root": "/tmp/pol7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": true
+          },
+          {
+            "id": "inherited-nested",
+            "passed": true
+          },
+          {
+            "id": "constructor-chain",
+            "passed": true
+          },
+          {
+            "id": "prototype-chain",
+            "passed": true
+          },
+          {
+            "id": "inherited-array",
+            "passed": true
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": true
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 1,
+      "root": "/tmp/pol7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": true
+          },
+          {
+            "id": "inherited-nested",
+            "passed": true
+          },
+          {
+            "id": "constructor-chain",
+            "passed": true
+          },
+          {
+            "id": "prototype-chain",
+            "passed": true
+          },
+          {
+            "id": "inherited-array",
+            "passed": true
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": true
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 1,
+      "root": "/tmp/pol7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": false
+          },
+          {
+            "id": "inherited-nested",
+            "passed": false
+          },
+          {
+            "id": "constructor-chain",
+            "passed": false
+          },
+          {
+            "id": "prototype-chain",
+            "passed": false
+          },
+          {
+            "id": "inherited-array",
+            "passed": false
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": false
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 2,
+      "root": "/tmp/pol7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": false
+          },
+          {
+            "id": "inherited-nested",
+            "passed": false
+          },
+          {
+            "id": "constructor-chain",
+            "passed": false
+          },
+          {
+            "id": "prototype-chain",
+            "passed": false
+          },
+          {
+            "id": "inherited-array",
+            "passed": false
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": false
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 2,
+      "root": "/tmp/pol7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": true
+          },
+          {
+            "id": "inherited-nested",
+            "passed": true
+          },
+          {
+            "id": "constructor-chain",
+            "passed": true
+          },
+          {
+            "id": "prototype-chain",
+            "passed": true
+          },
+          {
+            "id": "inherited-array",
+            "passed": true
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": true
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 3,
+      "root": "/tmp/pol7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": true
+          },
+          {
+            "id": "inherited-nested",
+            "passed": true
+          },
+          {
+            "id": "constructor-chain",
+            "passed": true
+          },
+          {
+            "id": "prototype-chain",
+            "passed": true
+          },
+          {
+            "id": "inherited-array",
+            "passed": true
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": true
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 3,
+      "root": "/tmp/pol7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": false
+          },
+          {
+            "id": "inherited-nested",
+            "passed": false
+          },
+          {
+            "id": "constructor-chain",
+            "passed": false
+          },
+          {
+            "id": "prototype-chain",
+            "passed": false
+          },
+          {
+            "id": "inherited-array",
+            "passed": false
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": false
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 4,
+      "root": "/tmp/pol7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": false
+          },
+          {
+            "id": "inherited-nested",
+            "passed": false
+          },
+          {
+            "id": "constructor-chain",
+            "passed": false
+          },
+          {
+            "id": "prototype-chain",
+            "passed": false
+          },
+          {
+            "id": "inherited-array",
+            "passed": false
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": false
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 4,
+      "root": "/tmp/pol7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": true
+          },
+          {
+            "id": "inherited-nested",
+            "passed": true
+          },
+          {
+            "id": "constructor-chain",
+            "passed": true
+          },
+          {
+            "id": "prototype-chain",
+            "passed": true
+          },
+          {
+            "id": "inherited-array",
+            "passed": true
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": true
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "revision": "89f1a85ec974d1f649dd08096e6f6de20d272ab42bd613d04906a258a2b05484",
+      "suite": "holdout",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": false
+          },
+          {
+            "id": "inherited-nested",
+            "passed": false
+          },
+          {
+            "id": "constructor-chain",
+            "passed": false
+          },
+          {
+            "id": "prototype-chain",
+            "passed": false
+          },
+          {
+            "id": "inherited-array",
+            "passed": false
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": false
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      },
+      "score": {
+        "primary": 0,
+        "itemWins": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "noopRate": 0,
+        "costPerWin": 0,
+        "regressed": true
+      }
+    },
+    {
+      "revision": "89f1a85ec974d1f649dd08096e6f6de20d272ab42bd613d04906a258a2b05484",
+      "suite": "anchor",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": false
+          },
+          {
+            "id": "inherited-nested",
+            "passed": false
+          },
+          {
+            "id": "constructor-chain",
+            "passed": false
+          },
+          {
+            "id": "prototype-chain",
+            "passed": false
+          },
+          {
+            "id": "inherited-array",
+            "passed": false
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": false
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      },
+      "score": {
+        "primary": 1,
+        "itemWins": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "noopRate": 0,
+        "costPerWin": 0,
+        "regressed": true
+      }
+    },
+    {
+      "revision": "2dfe8e2bf61323228dc559d2df5c21211fe3dc147c567203914dff9d0084d771",
+      "suite": "holdout",
+      "report": {
+        "holdout": [
+          {
+            "id": "inherited-root",
+            "passed": true
+          },
+          {
+            "id": "inherited-nested",
+            "passed": true
+          },
+          {
+            "id": "constructor-chain",
+            "passed": true
+          },
+          {
+            "id": "prototype-chain",
+            "passed": true
+          },
+          {
+            "id": "inherited-array",
+            "passed": true
+          },
+          {
+            "id": "shadowed-intermediate",
+            "passed": true
+          }
+        ],
+        "anchors": [
+          {
+            "id": "own-nested",
+            "passed": true
+          },
+          {
+            "id": "bracket-key",
+            "passed": true
+          },
+          {
+            "id": "array-index",
+            "passed": true
+          },
+          {
+            "id": "literal-dot",
+            "passed": true
+          },
+          {
+            "id": "zero",
+            "passed": true
+          },
+          {
+            "id": "false",
+            "passed": true
+          },
+          {
+            "id": "null",
+            "passed": true
+          },
+          {
+            "id": "own-proto-data",
+            "passed": true
+          }
+        ]
+      },
+      "score": {
+        "primary": 1,
+        "itemWins": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "noopRate": 0,
+        "costPerWin": 0,
+        "regressed": true
+      }
+    }
+  ],
+  "promotions": 0,
+  "fingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+  "replay": {
+    "pass": true,
+    "checks": {
+      "receipts": true,
+      "reachesRoot": true,
+      "contiguousParents": true,
+      "allPromoted": true,
+      "gateUnchanged": true,
+      "gateReExecutes": true,
+      "allCommitsReceipts": true,
+      "sealedFieldsAuthentic": true
+    },
+    "failures": [],
+    "chainSummary": "gen0(root)"
+  },
+  "replayBundle": {
+    "data_source": "LIVE_COMPILED_PRODUCTION_NODE",
+    "root_id": "root",
+    "chain": [
+      {
+        "id": "root",
+        "generation": 0,
+        "parents": [],
+        "mutation": null,
+        "primaryDelta": 0,
+        "anchorScore": 1,
+        "verdict": "ROOT",
+        "failureReasons": [],
+        "receipt": {
+          "payload": {
+            "kind": "root",
+            "root": "root"
+          },
+          "signature": "W61pEnkzauX9nLl+HobAYY7V2cwbjmW6d7ZtXfsgD2vvQ6PEazhYBN/hWgykAZAGwqzxmOwA23GuQFCHfgk9Cg==",
+          "publicKey": "MCowBQYDK2VwAyEAu3TYlczSG/fOoaoeVtDRfkHHr0Uuk06zmtOGzng0Eqw=",
+          "alg": "ed25519"
+        },
+        "createdAt": "gen-0"
+      }
+    ],
+    "all_commits": [
+      {
+        "id": "root__revision_gen1",
+        "generation": 1,
+        "parents": [
+          "root"
+        ],
+        "mutation": {
+          "target": "revision",
+          "summary": "Own-property-only policy context lookup",
+          "inverse": {
+            "path": "src/core/evaluator/condition-evaluator.ts",
+            "parentBytes": "/**\n * Condition Evaluator - Evaluates policy conditions against context\n */\nimport { Condition, ConditionOperator, EvaluationContext } from '../../types/policy';\nimport { PolicyEvaluationError } from '@utils/errors';\nimport logger from '@utils/logger';\nimport { get } from 'lodash';\n\nexport interface ConditionEvaluationResult {\n  result: boolean;\n  evaluationTimeMs: number;\n  details?: string;\n}\n\nexport class ConditionEvaluator {\n  /**\n   * Evaluate a condition against an evaluation context\n   */\n  evaluate(condition: Condition, context: EvaluationContext): ConditionEvaluationResult {\n    const startTime = Date.now();\n\n    try {\n      const result = this.evaluateCondition(condition, context);\n      const evaluationTimeMs = Date.now() - startTime;\n\n      logger.debug(\n        {\n          condition,\n          result,\n          evaluationTimeMs,\n        },\n        'Condition evaluated',\n      );\n\n      return {\n        result,\n        evaluationTimeMs,\n        details: `Evaluated ${condition.operator} condition`,\n      };\n    } catch (error) {\n      const evaluationTimeMs = Date.now() - startTime;\n      logger.error({ condition, error }, 'Condition evaluation failed');\n\n      throw new PolicyEvaluationError(\n        `Condition evaluation failed: ${error instanceof Error ? error.message : String(error)}`,\n        { condition, evaluationTimeMs },\n      );\n    }\n  }\n\n  /**\n   * Internal recursive condition evaluation\n   */\n  private evaluateCondition(condition: Condition, context: EvaluationContext): boolean {\n    const { operator } = condition;\n\n    // Logical operators\n    if (operator === ConditionOperator.AND) {\n      return this.evaluateAnd(condition.conditions || [], context);\n    }\n\n    if (operator === ConditionOperator.OR) {\n      return this.evaluateOr(condition.conditions || [], context);\n    }\n\n    if (operator === ConditionOperator.NOT) {\n      return !this.evaluateCondition(condition.conditions![0], context);\n    }\n\n    // Comparison operators\n    const fieldValue = this.getFieldValue(condition.field!, context);\n    const compareValue = condition.value;\n\n    switch (operator) {\n      case ConditionOperator.EQUALS:\n        return this.equals(fieldValue, compareValue);\n\n      case ConditionOperator.NOT_EQUALS:\n        return !this.equals(fieldValue, compareValue);\n\n      case ConditionOperator.GREATER_THAN:\n        return this.greaterThan(fieldValue, compareValue);\n\n      case ConditionOperator.GREATER_THAN_OR_EQUAL:\n        return this.greaterThanOrEqual(fieldValue, compareValue);\n\n      case ConditionOperator.LESS_THAN:\n        return this.lessThan(fieldValue, compareValue);\n\n      case ConditionOperator.LESS_THAN_OR_EQUAL:\n        return this.lessThanOrEqual(fieldValue, compareValue);\n\n      case ConditionOperator.IN:\n        return this.in(fieldValue, compareValue);\n\n      case ConditionOperator.NOT_IN:\n        return !this.in(fieldValue, compareValue);\n\n      case ConditionOperator.CONTAINS:\n        return this.contains(fieldValue, compareValue);\n\n      case ConditionOperator.NOT_CONTAINS:\n        return !this.contains(fieldValue, compareValue);\n\n      case ConditionOperator.MATCHES:\n        return this.matches(fieldValue, compareValue);\n\n      default:\n        throw new PolicyEvaluationError(`Unknown operator: ${operator}`);\n    }\n  }\n\n  /**\n   * AND operator - all conditions must be true\n   */\n  private evaluateAnd(conditions: Condition[], context: EvaluationContext): boolean {\n    return conditions.every((cond) => this.evaluateCondition(cond, context));\n  }\n\n  /**\n   * OR operator - at least one condition must be true\n   */\n  private evaluateOr(conditions: Condition[], context: EvaluationContext): boolean {\n    return conditions.some((cond) => this.evaluateCondition(cond, context));\n  }\n\n  /**\n   * Get field value from context using dot notation\n   */\n  private getFieldValue(field: string, context: EvaluationContext): any {\n    return get(context, field);\n  }\n\n  /**\n   * Equality comparison\n   */\n  private equals(a: any, b: any): boolean {\n    if (a === b) return true;\n    if (a == null || b == null) return a === b;\n\n    // Deep equality for objects and arrays\n    if (typeof a === 'object' && typeof b === 'object') {\n      return JSON.stringify(a) === JSON.stringify(b);\n    }\n\n    return String(a) === String(b);\n  }\n\n  /**\n   * Greater than comparison\n   */\n  private greaterThan(a: any, b: any): boolean {\n    const numA = Number(a);\n    const numB = Number(b);\n\n    if (isNaN(numA) || isNaN(numB)) {\n      return String(a) > String(b);\n    }\n\n    return numA > numB;\n  }\n\n  /**\n   * Greater than or equal comparison\n   */\n  private greaterThanOrEqual(a: any, b: any): boolean {\n    return this.greaterThan(a, b) || this.equals(a, b);\n  }\n\n  /**\n   * Less than comparison\n   */\n  private lessThan(a: any, b: any): boolean {\n    const numA = Number(a);\n    const numB = Number(b);\n\n    if (isNaN(numA) || isNaN(numB)) {\n      return String(a) < String(b);\n    }\n\n    return numA < numB;\n  }\n\n  /**\n   * Less than or equal comparison\n   */\n  private lessThanOrEqual(a: any, b: any): boolean {\n    return this.lessThan(a, b) || this.equals(a, b);\n  }\n\n  /**\n   * IN operator - value is in array\n   */\n  private in(value: any, array: any[]): boolean {\n    if (!Array.isArray(array)) {\n      return false;\n    }\n\n    return array.some((item) => this.equals(value, item));\n  }\n\n  /**\n   * CONTAINS operator - array/string contains value\n   */\n  private contains(haystack: any, needle: any): boolean {\n    if (typeof haystack === 'string') {\n      return haystack.includes(String(needle));\n    }\n\n    if (Array.isArray(haystack)) {\n      return haystack.some((item) => this.equals(item, needle));\n    }\n\n    if (typeof haystack === 'object' && haystack !== null) {\n      return Object.values(haystack).some((value) => this.equals(value, needle));\n    }\n\n    return false;\n  }\n\n  /**\n   * MATCHES operator - regex match\n   */\n  private matches(value: any, pattern: string): boolean {\n    try {\n      const regex = new RegExp(pattern);\n      return regex.test(String(value));\n    } catch (error) {\n      logger.warn({ pattern, error }, 'Invalid regex pattern');\n      return false;\n    }\n  }\n}\n",
+            "parentSha256": "89f1a85ec974d1f649dd08096e6f6de20d272ab42bd613d04906a258a2b05484"
+          }
+        },
+        "primaryDelta": 1,
+        "anchorScore": null,
+        "verdict": "REJECTED",
+        "failureReasons": [
+          "safety_regressed"
+        ],
+        "receipt": {
+          "payload": {
+            "kind": "candidate",
+            "id": "root__revision_gen1",
+            "target": "revision",
+            "verdict": "REJECTED",
+            "primaryDelta": 1,
+            "baselineScore": {
+              "primary": 0,
+              "itemWins": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+              ],
+              "noopRate": 0,
+              "costPerWin": 0,
+              "regressed": true
+            },
+            "candidateScore": {
+              "primary": 1,
+              "itemWins": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ],
+              "noopRate": 0,
+              "costPerWin": 0,
+              "regressed": true
+            },
+            "anchorScore": null,
+            "failureReasons": [
+              "safety_regressed"
+            ],
+            "parents": [
+              "root"
+            ],
+            "generation": 1
+          },
+          "signature": "v1lsqrTdrTJJU5je5zjNAsStHI9bgPEedN1VIrLabxsqEpCMWpk4xCQL7DQqQChqSXXD21yH1lO/3hc0Up/6DA==",
+          "publicKey": "MCowBQYDK2VwAyEAu3TYlczSG/fOoaoeVtDRfkHHr0Uuk06zmtOGzng0Eqw=",
+          "alg": "ed25519"
+        },
+        "createdAt": "gen-1",
+        "baselineScore": {
+          "primary": 0,
+          "itemWins": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": true
+        },
+        "candidateScore": {
+          "primary": 1,
+          "itemWins": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": true
+        }
+      }
+    ],
+    "lift_curve": [
+      {
+        "generation": 0,
+        "primary": 0,
+        "delta": 0,
+        "anchor": 1
+      }
+    ],
+    "gate_fingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+    "verified_improvements": 0,
+    "anchor_surviving_improvements": 0,
+    "milestone_reached": false,
+    "created_at": "gen-1"
+  },
+  "inverse": {
+    "path": "src/core/evaluator/condition-evaluator.ts",
+    "parentBytes": "/**\n * Condition Evaluator - Evaluates policy conditions against context\n */\nimport { Condition, ConditionOperator, EvaluationContext } from '../../types/policy';\nimport { PolicyEvaluationError } from '@utils/errors';\nimport logger from '@utils/logger';\nimport { get } from 'lodash';\n\nexport interface ConditionEvaluationResult {\n  result: boolean;\n  evaluationTimeMs: number;\n  details?: string;\n}\n\nexport class ConditionEvaluator {\n  /**\n   * Evaluate a condition against an evaluation context\n   */\n  evaluate(condition: Condition, context: EvaluationContext): ConditionEvaluationResult {\n    const startTime = Date.now();\n\n    try {\n      const result = this.evaluateCondition(condition, context);\n      const evaluationTimeMs = Date.now() - startTime;\n\n      logger.debug(\n        {\n          condition,\n          result,\n          evaluationTimeMs,\n        },\n        'Condition evaluated',\n      );\n\n      return {\n        result,\n        evaluationTimeMs,\n        details: `Evaluated ${condition.operator} condition`,\n      };\n    } catch (error) {\n      const evaluationTimeMs = Date.now() - startTime;\n      logger.error({ condition, error }, 'Condition evaluation failed');\n\n      throw new PolicyEvaluationError(\n        `Condition evaluation failed: ${error instanceof Error ? error.message : String(error)}`,\n        { condition, evaluationTimeMs },\n      );\n    }\n  }\n\n  /**\n   * Internal recursive condition evaluation\n   */\n  private evaluateCondition(condition: Condition, context: EvaluationContext): boolean {\n    const { operator } = condition;\n\n    // Logical operators\n    if (operator === ConditionOperator.AND) {\n      return this.evaluateAnd(condition.conditions || [], context);\n    }\n\n    if (operator === ConditionOperator.OR) {\n      return this.evaluateOr(condition.conditions || [], context);\n    }\n\n    if (operator === ConditionOperator.NOT) {\n      return !this.evaluateCondition(condition.conditions![0], context);\n    }\n\n    // Comparison operators\n    const fieldValue = this.getFieldValue(condition.field!, context);\n    const compareValue = condition.value;\n\n    switch (operator) {\n      case ConditionOperator.EQUALS:\n        return this.equals(fieldValue, compareValue);\n\n      case ConditionOperator.NOT_EQUALS:\n        return !this.equals(fieldValue, compareValue);\n\n      case ConditionOperator.GREATER_THAN:\n        return this.greaterThan(fieldValue, compareValue);\n\n      case ConditionOperator.GREATER_THAN_OR_EQUAL:\n        return this.greaterThanOrEqual(fieldValue, compareValue);\n\n      case ConditionOperator.LESS_THAN:\n        return this.lessThan(fieldValue, compareValue);\n\n      case ConditionOperator.LESS_THAN_OR_EQUAL:\n        return this.lessThanOrEqual(fieldValue, compareValue);\n\n      case ConditionOperator.IN:\n        return this.in(fieldValue, compareValue);\n\n      case ConditionOperator.NOT_IN:\n        return !this.in(fieldValue, compareValue);\n\n      case ConditionOperator.CONTAINS:\n        return this.contains(fieldValue, compareValue);\n\n      case ConditionOperator.NOT_CONTAINS:\n        return !this.contains(fieldValue, compareValue);\n\n      case ConditionOperator.MATCHES:\n        return this.matches(fieldValue, compareValue);\n\n      default:\n        throw new PolicyEvaluationError(`Unknown operator: ${operator}`);\n    }\n  }\n\n  /**\n   * AND operator - all conditions must be true\n   */\n  private evaluateAnd(conditions: Condition[], context: EvaluationContext): boolean {\n    return conditions.every((cond) => this.evaluateCondition(cond, context));\n  }\n\n  /**\n   * OR operator - at least one condition must be true\n   */\n  private evaluateOr(conditions: Condition[], context: EvaluationContext): boolean {\n    return conditions.some((cond) => this.evaluateCondition(cond, context));\n  }\n\n  /**\n   * Get field value from context using dot notation\n   */\n  private getFieldValue(field: string, context: EvaluationContext): any {\n    return get(context, field);\n  }\n\n  /**\n   * Equality comparison\n   */\n  private equals(a: any, b: any): boolean {\n    if (a === b) return true;\n    if (a == null || b == null) return a === b;\n\n    // Deep equality for objects and arrays\n    if (typeof a === 'object' && typeof b === 'object') {\n      return JSON.stringify(a) === JSON.stringify(b);\n    }\n\n    return String(a) === String(b);\n  }\n\n  /**\n   * Greater than comparison\n   */\n  private greaterThan(a: any, b: any): boolean {\n    const numA = Number(a);\n    const numB = Number(b);\n\n    if (isNaN(numA) || isNaN(numB)) {\n      return String(a) > String(b);\n    }\n\n    return numA > numB;\n  }\n\n  /**\n   * Greater than or equal comparison\n   */\n  private greaterThanOrEqual(a: any, b: any): boolean {\n    return this.greaterThan(a, b) || this.equals(a, b);\n  }\n\n  /**\n   * Less than comparison\n   */\n  private lessThan(a: any, b: any): boolean {\n    const numA = Number(a);\n    const numB = Number(b);\n\n    if (isNaN(numA) || isNaN(numB)) {\n      return String(a) < String(b);\n    }\n\n    return numA < numB;\n  }\n\n  /**\n   * Less than or equal comparison\n   */\n  private lessThanOrEqual(a: any, b: any): boolean {\n    return this.lessThan(a, b) || this.equals(a, b);\n  }\n\n  /**\n   * IN operator - value is in array\n   */\n  private in(value: any, array: any[]): boolean {\n    if (!Array.isArray(array)) {\n      return false;\n    }\n\n    return array.some((item) => this.equals(value, item));\n  }\n\n  /**\n   * CONTAINS operator - array/string contains value\n   */\n  private contains(haystack: any, needle: any): boolean {\n    if (typeof haystack === 'string') {\n      return haystack.includes(String(needle));\n    }\n\n    if (Array.isArray(haystack)) {\n      return haystack.some((item) => this.equals(item, needle));\n    }\n\n    if (typeof haystack === 'object' && haystack !== null) {\n      return Object.values(haystack).some((value) => this.equals(value, needle));\n    }\n\n    return false;\n  }\n\n  /**\n   * MATCHES operator - regex match\n   */\n  private matches(value: any, pattern: string): boolean {\n    try {\n      const regex = new RegExp(pattern);\n      return regex.test(String(value));\n    } catch (error) {\n      logger.warn({ pattern, error }, 'Invalid regex pattern');\n      return false;\n    }\n  }\n}\n",
+    "parentSha256": "89f1a85ec974d1f649dd08096e6f6de20d272ab42bd613d04906a258a2b05484"
+  },
+  "contract": {
+    "baseline": "343deaf5a4ac031b5b8e5cf4a6c964ec2dd62e77",
+    "acceptance": "Reject all six inherited-property policy matches; preserve eight own-path and value anchors, all existing assertions, and full repository gates before merge",
+    "trials": 5,
+    "candidate_budget": 1,
+    "darwin_generations": 1,
+    "darwin_children": 1,
+    "scope": "Compiled production ConditionEvaluator, real native Node execution; not end-to-end API, Rust parity or remote-provider proof"
+  },
+  "probeSha256": "f1fe98d392db463fddf2db3fa3ff83cfa834f21bb87de6108d0924a1bc317c4d",
+  "boundary": "regressed=true is the explicit fail-closed full-repository veto, not newly observed component regression. Cost/noop zero neutral and unmeasured. Root-only replay is not candidate promotion proof. Source rollback never deletes memory."
+}

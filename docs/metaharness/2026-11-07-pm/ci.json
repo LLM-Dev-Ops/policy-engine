@@ -1,0 +1,21 @@
+{
+  "run": 42404936342,
+  "head": "a88b0849f88370191c87746b2e00cdbd1e86a72d",
+  "jobs": [
+    {
+      "id": 128500478257,
+      "name": "native",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128500478331,
+      "name": "whole-suite",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "main": "c44b699eadc6b8dbbd26fa35d7cf82d61275979b",
+  "mergeable": true,
+  "merged": false
+}

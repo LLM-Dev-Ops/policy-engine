@@ -1,0 +1,118 @@
+{
+  "artifactSha256": "1ee040978cc7278b674f4cc66639fe37cd1755ce8827dd15d1dcd42dd55e9122",
+  "logs": {
+    "/tmp/pol7-rust-test.log": {
+      "bytes": 741,
+      "sha256": "5d42028107a6d32a154497e467bba209a541ca517129f67ed586760e8da3fbc5",
+      "truncated": false,
+      "text": "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:\npackage:   /tmp/policy-nov7pm/policy-engine-benchmarks/Cargo.toml\nworkspace: /tmp/policy-nov7pm/Cargo.toml\n    Updating git repository `https://github.com/LLM-Dev-Ops/observatory`\nerror: failed to get `llm-observatory-core` as a dependency of package `llm-policy-engine v0.1.0 (/tmp/policy-nov7pm)`\n\nCaused by:\n  failed to load source for dependency `llm-observatory-core`\n\nCaused by:\n  unable to update https://github.com/LLM-Dev-Ops/observatory?branch=main#020f9031\n\nCaused by:\n  could not write to '/home/ruv/.cargo/git/checkouts/observatory-32775b39e3022989/020f903/docs/TROUBLESHOOTING_DOCKER.md': No space left on device; class=Os (2)\n"
+    },
+    "/tmp/pol7-rust-build.log": {
+      "bytes": 668,
+      "sha256": "cc7a1392714cf33713296ebf3a0f157ecafe2881fc252283f36a9fd364a09c0e",
+      "truncated": false,
+      "text": "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:\npackage:   /tmp/policy-nov7pm/policy-engine-benchmarks/Cargo.toml\nworkspace: /tmp/policy-nov7pm/Cargo.toml\nerror: failed to get `llm-observatory-core` as a dependency of package `llm-policy-engine v0.1.0 (/tmp/policy-nov7pm)`\n\nCaused by:\n  failed to load source for dependency `llm-observatory-core`\n\nCaused by:\n  unable to update https://github.com/LLM-Dev-Ops/observatory?branch=main#020f9031\n\nCaused by:\n  could not write to '/home/ruv/.cargo/git/checkouts/observatory-32775b39e3022989/020f903/docs/TROUBLESHOOTING_DOCKER.md': No space left on device; class=Os (2)\n"
+    },
+    "/tmp/pol7-clippy.log": {
+      "bytes": 668,
+      "sha256": "cc7a1392714cf33713296ebf3a0f157ecafe2881fc252283f36a9fd364a09c0e",
+      "truncated": false,
+      "text": "warning: profiles for the non root package will be ignored, specify profiles at the workspace root:\npackage:   /tmp/policy-nov7pm/policy-engine-benchmarks/Cargo.toml\nworkspace: /tmp/policy-nov7pm/Cargo.toml\nerror: failed to get `llm-observatory-core` as a dependency of package `llm-policy-engine v0.1.0 (/tmp/policy-nov7pm)`\n\nCaused by:\n  failed to load source for dependency `llm-observatory-core`\n\nCaused by:\n  unable to update https://github.com/LLM-Dev-Ops/observatory?branch=main#020f9031\n\nCaused by:\n  could not write to '/home/ruv/.cargo/git/checkouts/observatory-32775b39e3022989/020f903/docs/TROUBLESHOOTING_DOCKER.md': No space left on device; class=Os (2)\n"
+    },
+    "/tmp/pol7-rust-audit.log": {
+      "bytes": 346,
+      "sha256": "c1bc60a0f8528401a15eb75c1b04292dc306e4232c401e264ac7dd93a8c48061",
+      "truncated": false,
+      "text": "error: couldn't fetch advisory database: git operation failed: failed to fetch\nCaused by:\n  -> Failed to consume the pack sent by the remote\n  -> A pack entry could not be extracted\n  -> An IO operation failed while streaming an entry\n  -> No space left on device (os error 28) at path \"/home/ruv/.cargo/advisory-db/.git/objects/pack/.tmpssOq7o\"\n"
+    },
+    "/tmp/pol7-fmt.log": {
+      "bytes": 52140,
+      "sha256": "9cd815ac65f0cb7a18d15d623397ff8828ab7f62325d662f43d9e1d29847b0b6",
+      "truncated": true,
+      "text": "Diff in /tmp/policy-nov7pm/policy-engine-benchmarks/benches/cache_performance.rs:3:\n //! This benchmark measures cache hit/miss performance simulation\n //! for policy evaluation caching.\n \n\u001b[31m-use criterion::{criterion_group, criterion_main, Criterion, BenchmarkId, Throughput};\n\u001b[m\u000f\u001b[31m-use std::collections::HashMap;\n\u001b[m\u000f\u001b[32m+use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};\n\u001b[m\u000f use serde_json::json;\n\u001b[32m+use std::collections::HashMap;\n\u001b[m\u000f \n /// Simulated cache for benchmarking.\n struct MockCache {\nDiff in /tmp/policy-nov7pm/policy-engine-benchmarks/benches/cache_performance.rs:48:\n         cache.populate(*size);\n \n         group.throughput(Throughput::Elements(1));\n\u001b[31m-        group.bench_with_input(\n\u001b[m\u000f\u001b[31m-            BenchmarkId::new(\"size\", size),\n\u001b[m\u000f\u001b[31m-            &cache,\n\u001b[m\u000f\u001b[31m-            |b, cache| {\n\u001b[m\u000f\u001b[31m-               \n[TRUNCATED]\nfield(\"Rule name cannot be empty\", \"name\"));\n\u001b[m\u000f\u001b[32m+            return Err(crate::Error::validation_field(\n\u001b[m\u000f\u001b[32m+                \"Rule name cannot be empty\",\n\u001b[m\u000f\u001b[32m+                \"name\",\n\u001b[m\u000f\u001b[32m+            ));\n\u001b[m\u000f         }\n \n         self.condition.validate()?;\nDiff in /tmp/policy-nov7pm/src/policy/rule.rs:152:\n     /// Build the rule.\n     pub fn build(self) -> crate::Result<PolicyRule> {\n         let name = self.name.unwrap_or_else(|| self.id.clone());\n\u001b[31m-        let condition = self.condition.ok_or_else(|| {\n\u001b[m\u000f\u001b[31m-            crate::Error::validation(\"Rule must have a condition\")\n\u001b[m\u000f\u001b[31m-        })?;\n\u001b[m\u000f\u001b[32m+        let condition = self\n\u001b[m\u000f\u001b[32m+            .condition\n\u001b[m\u000f\u001b[32m+            .ok_or_else(|| crate::Error::validation(\"Rule must have a condition\"))?;\n\u001b[m\u000f         let action = self.action.unwrap_or_else(Action::allow);\n \n         Ok(PolicyRule {\n"
+    },
+    "/tmp/pol7-agent.log": {
+      "bytes": 993,
+      "sha256": "d4bac97f6e2d528dd61cb97b67ddf0821d78f6ce21d9c95752e200ef33df9aa2",
+      "truncated": false,
+      "text": "{\"success\":true,\"agentId\":\"pol7pm-review\",\"agentType\":\"tester\",\"model\":\"inherit\",\"modelRoutedBy\":\"explicit\",\"status\":\"registered\",\"createdAt\":\"2026-11-07T19:09:57.253Z\",\"note\":\"Agent registered for coordination. Three execution paths: (1) call agent_execute(agentId, prompt) — direct LLM call via Anthropic Messages API (requires ANTHROPIC_API_KEY); (2) Claude Code Task tool — spawns a real subagent; (3) claude -p — headless background instance.\"}\n{\"success\":false,\"agentId\":\"pol7pm-review\",\"model\":\"claude-sonnet-5\",\"error\":\"No LLM provider configured. Set ANTHROPIC_API_KEY or ANTHROPIC_AUTH_TOKEN (Tier-3), OPENROUTER_API_KEY (#2042), or OLLAMA_API_KEY (Tier-2 — #1725).\",\"durationMs\":14,\"remediation\":\"Set one of ANTHROPIC_API_KEY, OPENROUTER_API_KEY (+ optional OPENROUTER_BASE_URL), or OLLAMA_API_KEY. Or set RUFLO_PROVIDER=openrouter|ollama to force a specific provider.\"}\n{\"success\":true,\"agentId\":\"pol7pm-review\",\"terminated\":true,\"terminatedAt\":\"2026-11-07T19:09:57.284Z\"}\n"
+    },
+    "/tmp/pol7-meta.json": {
+      "bytes": 410,
+      "sha256": "857bb8c76efbcfde6a1a5d373568f592e31b6d15ebb57e756421537122cafd1b",
+      "truncated": false,
+      "text": "{\n  \"schema\": 1,\n  \"repo\": \"@llm-dev-ops/policy-engine\",\n  \"harnessFit\": 79,\n  \"compileConfidence\": 100,\n  \"taskCoverage\": 79,\n  \"toolSafety\": 100,\n  \"memoryUsefulness\": 45,\n  \"estCostPerRunUsd\": 0.048,\n  \"recommendedMode\": \"CLI + MCP\",\n  \"archetype\": \"typescript-sdk-harness\",\n  \"template\": \"vertical:coding\",\n  \"scaffoldReady\": true,\n  \"hardConstraints\": \"6/6\",\n  \"generatedAt\": \"2026-11-07T19:10:57.857Z\"\n}\n"
+    },
+    "/tmp/pol7-darwin.log": {
+      "bytes": 754,
+      "sha256": "0d4667080c0bf96d1c3ad4d72a9d82627a23bd8b87cacfac5c5ee43ac079771b",
+      "truncated": false,
+      "text": "note: --sandbox real (the default) scores variants by this repo's own test\ncommand, which cannot distinguish between mutated harness surfaces — every\nvariant will score identically and evolution will not converge on anything\n(see README \"The evaluation substrate\", ADR-099/102). Pass --sandbox mock\n(fast, deterministic), --sandbox agent (executes the real surface code,\nstill offline), or --sandbox llm-agent (genuine real-LLM signal, real API\nspend, ADR-273) for genuine evolutionary signal.\n\nDarwin Mode — leaderboard\n  0.435  baseline  [planner]  safety=1.00  pass=0.00 ◀ winner\n  0.435  g1_v0  [contextBuilder]  safety=1.00  pass=0.00\n\nWinner: baseline\nLineage: baseline\nDelta over baseline: +0.000\n\nArtifacts: /tmp/policy-nov7pm/.metaharness\n"
+    },
+    "/tmp/pol7-learning.log": {
+      "bytes": 957,
+      "sha256": "0a11995a0b1fcc4a3b4ae03de921cc55c0182fa560917a99eefc2cee3542d3c1",
+      "truncated": false,
+      "text": "Offline local MiniLM model verified: 384 dimensions; remote loading disabled\n[INFO] Recording outcome for task: policy-20261107-own-path\n[policy] anchor mirror not written: ENOSPC: no space left on device, mkdir '/home/ruv/.config/ruflo/policy-trust/b1bfe74bc28ddbc98e2276edaca1a77a5304bbc8f69f525a1e955700b4949f6e'\nTransformers.js loaded: Xenova/all-MiniLM-L6-v2\n{\n  \"taskId\": \"policy-20261107-own-path\",\n  \"success\": false,\n  \"duration\": 859,\n  \"learningUpdates\": {\n    \"patternsUpdated\": 2,\n    \"newPatterns\": null,\n    \"trajectoryId\": null,\n    \"controller\": \"intelligence+bridge-store\",\n    \"outcomePersisted\": true,\n    \"available\": true\n  },\n  \"trajectory\": {\n    \"recorded\": true\n  },\n  \"quality\": 0.8,\n  \"pheromone\": {\n    \"active\": false,\n    \"reason\": \"no running pheromone-adaptive swarm\"\n  },\n  \"feedback\": {\n    \"recorded\": true,\n    \"controller\": \"intelligence+bridge-store\",\n    \"updates\": 2\n  },\n  \"timestamp\": \"2026-11-07T19:12:34.394Z\"\n}\n"
+    },
+    "/tmp/pol7-offline.log": {
+      "bytes": 273,
+      "sha256": "417711d1e1595731897ef3e9191a55392bceb958adf14553e41aeb3ec042852b",
+      "truncated": false,
+      "text": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/lib/python3.12/socket.py\", line 233, in __init__\n    _socket.socket.__init__(self, family, type, proto, fileno)\nPermissionError: [Errno 1] Operation not permitted\nDENIED 2 1\nDENIED 10 1\n"
+    },
+    "/tmp/pol7-integration.log": {
+      "bytes": 411,
+      "sha256": "beb97fdf3592ceb0185f955c54a45c12cc1aa956845ef882b0e19f91daf24f63",
+      "truncated": false,
+      "text": "\n> @llm-dev-ops/policy-engine@1.0.0 test:integration\n> jest --testPathPattern=integration --runInBand\n\nNo tests found, exiting with code 1\nRun with `--passWithNoTests` to exit with code 0\nIn /tmp/policy-nov7pm\n  108 files checked.\n  testMatch: **/__tests__/**/*.test.ts, **/*.test.ts - 13 matches\n  testPathIgnorePatterns: /node_modules/ - 108 matches\n  testRegex:  - 0 matches\nPattern: integration - 0 matches\n"
+    },
+    "/tmp/pol7-final-test.log": {
+      "bytes": 24481,
+      "sha256": "27c7793ec49e94732e7e0505297cea1a906b1c8a18bd3e46df47e4ebbb711b14",
+      "truncated": true,
+      "text": "\n> @llm-dev-ops/policy-engine@1.0.0 test\n> jest --coverage --runInBand --json --outputFile=/tmp/pol7-remote-final-tests.json\n\nts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do\ntransform: {\n    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],\n},\nSee more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced\nts-jest[config] (WARN) \n    The \"ts-jest\" config option \"isolatedModules\" is deprecated and will be removed in v30.0.0. Please use \"isolatedModules: true\" in /tmp/policy-nov7pm/tsconfig.json instead, see https://www.typescriptlang.org/tsconfig/#isolatedModules\n  \nPASS src/db/models/__tests__/api-key-repository.test.ts (5.706 s)\n  APIKeyRepository\n    hashApiKey\n      ✓ should hash API key using bcrypt (513 ms)\n      ✓ should generate different hashes for same key (504 ms)\n      ✓ shoul\n[TRUNCATED]\nre (1 ms)\n      ✓ should generate unique span IDs (1 ms)\n      ✓ should set start_time as valid ISO 8601\n    createAgentSpan\n      ✓ should create an agent span nested under repo span (1 ms)\n      ✓ should generate unique span IDs per agent invocation\n    finalizeSpan\n      ✓ should set end_time and completed status (1 ms)\n      ✓ should set failed status with error message\n      ✓ should return the span for chaining\n    attachArtifact\n      ✓ should attach artifact with producer_span_id\n      ✓ should allow multiple artifacts on a single span\n    Span hierarchy invariants\n      ✓ should maintain causal ordering: Core -> Repo -> Agent\n      ✓ should produce JSON-serializable spans without loss (1 ms)\n\nTest Suites: 13 passed, 13 total\nTests:       370 passed, 370 total\nSnapshots:   0 total\nTime:        10.765 s\nRan all test suites.\nTest results written to: ../pol7-remote-final-tests.json\n"
+    },
+    "/tmp/pol7-base-test.log": {
+      "bytes": 24249,
+      "sha256": "504b0aeb34d65d6df796989e75d715040c32ead984886bbf2fb131da1a76a5d7",
+      "truncated": true,
+      "text": "\n> @llm-dev-ops/policy-engine@1.0.0 test\n> jest --coverage --runInBand --json --outputFile=/tmp/pol7-remote-base-tests.json\n\nts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do\ntransform: {\n    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],\n},\nSee more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced\nts-jest[config] (WARN) \n    The \"ts-jest\" config option \"isolatedModules\" is deprecated and will be removed in v30.0.0. Please use \"isolatedModules: true\" in /tmp/pol7-base/tsconfig.json instead, see https://www.typescriptlang.org/tsconfig/#isolatedModules\n  \nPASS src/core/evaluator/__tests__/condition-evaluator.test.ts\n  ConditionEvaluator\n    Logical Operators\n      AND operator\n        ✓ should return true when all conditions are true (4 ms)\n        ✓ should return false when any con\n[TRUNCATED]\nould pass with valid execution context headers (1 ms)\n    ✓ should set executionContext on res.locals (1 ms)\n    ✓ should create a repo span on res.locals (1 ms)\n\nPASS src/api/middleware/__tests__/auth.test.ts\n  JWT trust boundary\n    ✓ generates a scoped HS256 token that round-trips (7 ms)\n    ✓ rejects a token with missing issuer and audience (2 ms)\n    ✓ rejects a token with wrong issuer (2 ms)\n    ✓ rejects a token with wrong audience (2 ms)\n    ✓ rejects malformed identity claims: missing subject (2 ms)\n    ✓ rejects malformed identity claims: missing email (2 ms)\n    ✓ rejects malformed identity claims: non-array roles (1 ms)\n    ✓ rejects malformed identity claims: non-string permissions (2 ms)\n\nTest Suites: 12 passed, 12 total\nTests:       369 passed, 369 total\nSnapshots:   0 total\nTime:        14.815 s\nRan all test suites.\nTest results written to: ../pol7-remote-base-tests.json\n"
+    },
+    ".metaharness/runs/baseline.json": {
+      "bytes": 2614,
+      "sha256": "6d2baf05451dc4f9b09304edef295aaca52e8a5ac883575c9e22c292b5aa7cfe",
+      "truncated": true,
+      "text": "{\n  \"traces\": [\n    {\n      \"variantId\": \"baseline\",\n      \"taskId\": \"run repository test suite\",\n      \"startedAt\": \"2026-11-07T19:10:58.141Z\",\n      \"finishedAt\": \"2026-11-07T19:10:58.292Z\",\n      \"exitCode\": 228,\n      \"stdout\": \"\",\n      \"stderr\": \"npm error code ENOSPC\\nnpm error syscall write\\nnpm error errno -28\\nnpm error nospc ENOSPC: no space left on device, write\\nnpm error nospc There appears to be insufficient space on your system to finish.\\nnpm error nospc Clear up some disk space and try again.\\nnpm error A complete log of this run can be found in: /home/ruv/.npm/_logs/2026-11-07T19_10_58_218Z-debug-0.log\\n\",\n      \"durationMs\": 151,\n      \"timedOut\": false,\n      \"blockedActions\": []\n    },\n    {\n      \"variantId\": \"baseline\",\n      \"taskId\": \"verify generated harness safety\",\n      \"startedAt\": \"2026-11-07T19:10:58.292Z\",\n      \"finishedAt\": \"2026-11-07T19:10:58.445Z\",\n\n[TRUNCATED]\nrrno -28\\nnpm error nospc ENOSPC: no space left on device, write\\nnpm error nospc There appears to be insufficient space on your system to finish.\\nnpm error nospc Clear up some disk space and try again.\\nnpm error A complete log of this run can be found in: /home/ruv/.npm/_logs/2026-11-07T19_10_58_527Z-debug-0.log\\n\",\n      \"durationMs\": 153,\n      \"timedOut\": false,\n      \"blockedActions\": []\n    }\n  ],\n  \"score\": {\n    \"variantId\": \"baseline\",\n    \"taskSuccess\": 0,\n    \"testPassRate\": 0,\n    \"traceQuality\": 0.9,\n    \"costEfficiency\": 1,\n    \"latencyEfficiency\": 1,\n    \"safetyScore\": 1,\n    \"secretExposure\": 0,\n    \"destructiveAction\": 0,\n    \"hallucinatedFile\": 0,\n    \"toolLoop\": 0,\n    \"costOverrun\": 0,\n    \"baseScore\": 0.435,\n    \"finalScore\": 0.435,\n    \"promoted\": true,\n    \"reason\": \"promoted: finalScore 0.4350 > parent 0.0000 + delta 0.05 (safety 1.00, no test regression)\"\n  }\n}"
+    },
+    ".metaharness/runs/g1_v0.json": {
+      "bytes": 2575,
+      "sha256": "d6366c83751a260eea0dc5697fc3313b41344b8b4ed11168de81ddd03e8fa679",
+      "truncated": true,
+      "text": "{\n  \"traces\": [\n    {\n      \"variantId\": \"g1_v0\",\n      \"taskId\": \"run repository test suite\",\n      \"startedAt\": \"2026-11-07T19:10:58.615Z\",\n      \"finishedAt\": \"2026-11-07T19:10:58.741Z\",\n      \"exitCode\": 228,\n      \"stdout\": \"\",\n      \"stderr\": \"npm error code ENOSPC\\nnpm error syscall write\\nnpm error errno -28\\nnpm error nospc ENOSPC: no space left on device, write\\nnpm error nospc There appears to be insufficient space on your system to finish.\\nnpm error nospc Clear up some disk space and try again.\\nnpm error A complete log of this run can be found in: /home/ruv/.npm/_logs/2026-11-07T19_10_58_682Z-debug-0.log\\n\",\n      \"durationMs\": 126,\n      \"timedOut\": false,\n      \"blockedActions\": []\n    },\n    {\n      \"variantId\": \"g1_v0\",\n      \"taskId\": \"verify generated harness safety\",\n      \"startedAt\": \"2026-11-07T19:10:58.741Z\",\n      \"finishedAt\": \"2026-11-07T19:10:58.884Z\",\n      \n[TRUNCATED]\nerror syscall write\\nnpm error errno -28\\nnpm error nospc ENOSPC: no space left on device, write\\nnpm error nospc There appears to be insufficient space on your system to finish.\\nnpm error nospc Clear up some disk space and try again.\\nnpm error A complete log of this run can be found in: /home/ruv/.npm/_logs/2026-11-07T19_10_58_959Z-debug-0.log\\n\",\n      \"durationMs\": 132,\n      \"timedOut\": false,\n      \"blockedActions\": []\n    }\n  ],\n  \"score\": {\n    \"variantId\": \"g1_v0\",\n    \"taskSuccess\": 0,\n    \"testPassRate\": 0,\n    \"traceQuality\": 0.9,\n    \"costEfficiency\": 1,\n    \"latencyEfficiency\": 1,\n    \"safetyScore\": 1,\n    \"secretExposure\": 0,\n    \"destructiveAction\": 0,\n    \"hallucinatedFile\": 0,\n    \"toolLoop\": 0,\n    \"costOverrun\": 0,\n    \"baseScore\": 0.435,\n    \"finalScore\": 0.435,\n    \"promoted\": false,\n    \"reason\": \"not promoted: finalScore 0.4350 ≤ parent 0.4350 + delta 0.05\"\n  }\n}"
+    },
+    ".metaharness/lineage.json": {
+      "bytes": 446,
+      "sha256": "277794595516d406272e825903945b3aa3d6c2f6726a6839726d427193ca7def",
+      "truncated": false,
+      "text": "{\n  \"nodes\": [\n    {\n      \"id\": \"baseline\",\n      \"parentId\": null,\n      \"generation\": 0,\n      \"mutationSurface\": \"planner\",\n      \"finalScore\": 0.435,\n      \"promoted\": true\n    },\n    {\n      \"id\": \"g1_v0\",\n      \"parentId\": \"baseline\",\n      \"generation\": 1,\n      \"mutationSurface\": \"contextBuilder\",\n      \"finalScore\": 0.435,\n      \"promoted\": false\n    }\n  ],\n  \"edges\": [\n    {\n      \"from\": \"baseline\",\n      \"to\": \"g1_v0\"\n    }\n  ]\n}"
+    }
+  },
+  "reports": [
+    {
+      "path": "/tmp/pol7-remote-base-tests.json",
+      "passed": 369,
+      "failed": 0,
+      "pending": 0,
+      "assertionNamesSha256": "5ba8a00689d5e61d8e3b0dc48ec147f74941cc2782f794970dddc89488d16b44"
+    },
+    {
+      "path": "/tmp/pol7-remote-final-tests.json",
+      "passed": 370,
+      "failed": 0,
+      "pending": 0,
+      "assertionNamesSha256": "a81bd9b31487b3d7683b4b5db185fc1beed972930a797da44706383fdd5d5705"
+    }
+  ],
+  "missingOriginalNames": []
+}

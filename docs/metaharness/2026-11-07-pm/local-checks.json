@@ -1,0 +1,347 @@
+{
+  "lint": "nthesis/types.ts\n  24:8  error  Replace `·'deny_action'·|·'conflicting_priorities'·|·'missing_conditions'·|·'validation_error'` with `⏎····|·'deny_action'⏎····|·'conflicting_priorities'⏎····|·'missing_conditions'⏎····|·'validation_error'⏎···`  prettier/prettier\n\n/tmp/policy-nov7pm/src/test/setup.ts\n  58:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  96:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n\n/tmp/policy-nov7pm/src/types/policy.ts\n   52:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n   59:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n   60:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n   85:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  109:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  119:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  120:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n\n/tmp/policy-nov7pm/src/utils/config.ts\n  69:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n\n/tmp/policy-nov7pm/src/utils/errors.ts\n  10:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  19:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  26:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  33:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  47:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  54:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n\n/tmp/policy-nov7pm/src/utils/logger.ts\n  30:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n\n✖ 1061 problems (624 errors, 437 warnings)\n  608 errors and 0 warnings potentially fixable with the `--fix` option.\n\n",
+  "focusedLint": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n/tmp/policy-nov7pm/src/core/evaluator/__tests__/own-path.test.ts\n  0:0  error  Parsing error: ESLint was configured to run on `<tsconfigRootDir>/src/core/evaluator/__tests__/own-path.test.ts` using `parserOptions.project`: <tsconfigRootDir>/tsconfig.json\nHowever, that TSConfig does not include this file. Either:\n- Change ESLint's list of included files to not include this file\n- Change that TSConfig to include this file\n- Create a new TSConfig that includes this file and include it in your parserOptions.project\nSee the typescript-eslint docs for more info: https://typescript-eslint.io/troubleshooting/typed-linting#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file\n\n/tmp/policy-nov7pm/src/core/evaluator/condition-evaluator.ts\n  130:69  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  137:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  148:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  148:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  163:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  163:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  177:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  177:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  184:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  184:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  198:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  198:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  205:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  205:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  216:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  216:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n  235:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any\n\n✖ 18 problems (1 error, 17 warnings)\n\n",
+  "format": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\nChecking formatting...\nAll matched files use Prettier code style!\n",
+  "audit": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 7,
+      "moderate": 20,
+      "high": 14,
+      "critical": 3,
+      "total": 44
+    },
+    "dependencies": {
+      "prod": 377,
+      "dev": 430,
+      "optional": 29,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 807
+    }
+  },
+  "productionAudit": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 14,
+      "high": 13,
+      "critical": 2,
+      "total": 29
+    },
+    "dependencies": {
+      "prod": 377,
+      "dev": 430,
+      "optional": 29,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 807
+    }
+  },
+  "vulnerabilities": {
+    "@grpc/grpc-js": {
+      "severity": "high",
+      "isDirect": true,
+      "fixAvailable": true
+    },
+    "@jest/core": {
+      "severity": "low",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "jest",
+        "version": "25.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@mapbox/node-pre-gyp": {
+      "severity": "high",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "@opentelemetry/core": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "@opentelemetry/exporter-prometheus",
+        "version": "0.301.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opentelemetry/exporter-jaeger": {
+      "severity": "moderate",
+      "isDirect": true,
+      "fixAvailable": false
+    },
+    "@opentelemetry/exporter-prometheus": {
+      "severity": "high",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "@opentelemetry/exporter-prometheus",
+        "version": "0.301.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opentelemetry/instrumentation-express": {
+      "severity": "moderate",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "@opentelemetry/instrumentation-express",
+        "version": "0.73.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opentelemetry/instrumentation-http": {
+      "severity": "moderate",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "@opentelemetry/instrumentation-http",
+        "version": "0.301.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opentelemetry/instrumentation-pg": {
+      "severity": "moderate",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "@opentelemetry/instrumentation-pg",
+        "version": "0.78.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opentelemetry/propagator-b3": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "@opentelemetry/propagator-jaeger": {
+      "severity": "high",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "@opentelemetry/sdk-trace-node",
+        "version": "2.12.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opentelemetry/resources": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "@opentelemetry/exporter-prometheus",
+        "version": "0.301.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opentelemetry/sdk-metrics": {
+      "severity": "moderate",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "@opentelemetry/sdk-metrics",
+        "version": "3.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opentelemetry/sdk-trace-base": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "@opentelemetry/sdk-trace-node": {
+      "severity": "high",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "@opentelemetry/sdk-trace-node",
+        "version": "2.12.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opentelemetry/sql-common": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "@opentelemetry/instrumentation-pg",
+        "version": "0.78.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@typescript-eslint/eslint-plugin": {
+      "severity": "moderate",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "@typescript-eslint/eslint-plugin",
+        "version": "6.15.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@typescript-eslint/parser": {
+      "severity": "moderate",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "@typescript-eslint/parser",
+        "version": "6.15.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@typescript-eslint/type-utils": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "@typescript-eslint/eslint-plugin",
+        "version": "6.15.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@typescript-eslint/typescript-estree": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "@typescript-eslint/parser",
+        "version": "6.15.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@typescript-eslint/utils": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "axios": {
+      "severity": "high",
+      "isDirect": true,
+      "fixAvailable": true
+    },
+    "body-parser": {
+      "severity": "high",
+      "isDirect": true,
+      "fixAvailable": true
+    },
+    "brace-expansion": {
+      "severity": "high",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "compression": {
+      "severity": "high",
+      "isDirect": true,
+      "fixAvailable": true
+    },
+    "create-jest": {
+      "severity": "low",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "deepmerge": {
+      "severity": "low",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "jest",
+        "version": "25.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "fast-copy": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "fast-uri": {
+      "severity": "high",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "follow-redirects": {
+      "severity": "high",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "handlebars": {
+      "severity": "critical",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "jaeger-client": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": false
+    },
+    "jest": {
+      "severity": "low",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "jest",
+        "version": "25.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-cli": {
+      "severity": "low",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "jest-config": {
+      "severity": "low",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "jest",
+        "version": "25.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "joi": {
+      "severity": "high",
+      "isDirect": true,
+      "fixAvailable": true
+    },
+    "js-yaml": {
+      "severity": "high",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "minimatch": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": {
+        "name": "@typescript-eslint/parser",
+        "version": "6.15.0",
+        "isSemVerMajor": true
+      }
+    },
+    "proxy-addr": {
+      "severity": "critical",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "qs": {
+      "severity": "moderate",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "tar": {
+      "severity": "critical",
+      "isDirect": false,
+      "fixAvailable": true
+    },
+    "ts-jest": {
+      "severity": "low",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "ts-jest",
+        "version": "25.5.1",
+        "isSemVerMajor": true
+      }
+    },
+    "uuid": {
+      "severity": "moderate",
+      "isDirect": true,
+      "fixAvailable": false
+    },
+    "zod": {
+      "severity": "high",
+      "isDirect": true,
+      "fixAvailable": {
+        "name": "zod",
+        "version": "4.6.7",
+        "isSemVerMajor": true
+      }
+    }
+  }
+}
