@@ -4,7 +4,7 @@
 import { Condition, ConditionOperator, EvaluationContext } from '../../types/policy';
 import { PolicyEvaluationError } from '@utils/errors';
 import logger from '@utils/logger';
-import { get } from 'lodash';
+import { toPath } from 'lodash';
 
 export interface ConditionEvaluationResult {
   result: boolean;
@@ -128,7 +128,18 @@ export class ConditionEvaluator {
    * Get field value from context using dot notation
    */
   private getFieldValue(field: string, context: EvaluationContext): any {
-    return get(context, field);
+    // Policy data must come from the supplied context, not its prototype chain.
+    // Keep literal-key precedence and bracket syntax, but check every segment.
+    // lodash.has treats sparse array positions as present, so do not use it here.
+    if (typeof field !== 'string') return undefined;
+    const own = Object.prototype.hasOwnProperty;
+    const path = context != null && own.call(context, field) ? [field] : toPath(field);
+    let current: any = context;
+    for (const key of path) {
+      if (current == null || !own.call(current, key)) return undefined;
+      current = current[key];
+    }
+    return current;
   }
 
   /**
