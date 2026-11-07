@@ -11,11 +11,14 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20.20.2'
           cache: npm
       - run: npm ci --ignore-scripts
+      - run: npm rebuild bcrypt --build-from-source
       - run: npm run build
       - run: npx jest --runInBand --runTestsByPath src/core/evaluator/__tests__/own-path.test.ts
       - run: npm run typecheck
@@ -24,10 +27,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20.20.2'
           cache: npm
       - run: npm ci --ignore-scripts
+      - run: npm rebuild bcrypt --build-from-source
       - run: npm run build
       - run: npm test -- --runInBand
