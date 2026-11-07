@@ -4,7 +4,7 @@
 import { Condition, ConditionOperator, EvaluationContext } from '../../types/policy';
 import { PolicyEvaluationError } from '@utils/errors';
 import logger from '@utils/logger';
-import { get } from 'lodash';
+import { get, has } from 'lodash';
 
 export interface ConditionEvaluationResult {
   result: boolean;
@@ -128,7 +128,9 @@ export class ConditionEvaluator {
    * Get field value from context using dot notation
    */
   private getFieldValue(field: string, context: EvaluationContext): any {
-    return get(context, field);
+    // Policy data must come from the supplied context, not its prototype chain.
+    // lodash.has preserves the same literal-key/bracket-path parsing as get.
+    return has(context, field) ? get(context, field) : undefined;
   }
 
   /**
